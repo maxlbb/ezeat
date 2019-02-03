@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
+
+    <View
+        android:id="@+id/view_background"
+        android:layout_width="128dp"
+        android:layout_height="match_parent"
+        android:background="@color/redBack"/>
+
+    <!-- TODO spostare sopra il padding, messo qui per il background -->
+    <androidx.viewpager.widget.ViewPager
+        android:paddingTop="56dp"
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</FrameLayout>
