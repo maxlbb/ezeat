@@ -14,17 +14,18 @@ import one.marcomass.ezeat.models.Dish;
 public class CartRepository {
 
     private CartDAO cartDAO;
-    private LiveData<List<DishEntity>> allDishes;
-    private LiveData<Integer> dishCount;
 
     public CartRepository(Application application) {
         CartRoomDatabase cartRoomDatabase = CartRoomDatabase.getDatabase(application);
         cartDAO = cartRoomDatabase.cartDAO();
-        allDishes = cartDAO.getAllDishes();
     }
 
     public LiveData<List<DishEntity>> getAllDishes() {
-        return allDishes;
+        return cartDAO.getAllDishes();
+    }
+
+    public LiveData<Integer> getDishCount(int dishID) {
+        return cartDAO.getDishCount(dishID);
     }
 
     public void insert(DishEntity dish) {

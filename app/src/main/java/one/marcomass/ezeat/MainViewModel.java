@@ -29,6 +29,7 @@ public class MainViewModel extends AndroidViewModel {
 
     private CartRepository cartRepository;
     private LiveData<List<DishEntity>> allDishes;
+    private LiveData<Integer> cartAllDishCount;
     private LiveData<Integer> cartDishCount;
 
     public MainViewModel(Application application) {
@@ -36,7 +37,7 @@ public class MainViewModel extends AndroidViewModel {
         cart = new Cart();
         cartRepository = new CartRepository(application);
         allDishes = cartRepository.getAllDishes();
-        cartDishCount = Transformations.map(allDishes, new Function<List<DishEntity>, Integer>() {
+        cartAllDishCount = Transformations.map(allDishes, new Function<List<DishEntity>, Integer>() {
             @Override
             public Integer apply(List<DishEntity> input) {
                 return input.size();
@@ -65,8 +66,12 @@ public class MainViewModel extends AndroidViewModel {
         cartRepository.removeDish(dish.getID());
     }
 
-    public LiveData<Integer> getCartDishCount() {
-        return cartDishCount;
+    public LiveData<Integer> getCartAllDishCount() {
+        return cartAllDishCount;
+    }
+
+    public LiveData<Integer> getCartDishCount(int dishID) {
+        return cartRepository.getDishCount(dishID);
     }
 
     //----------------------------------------------------------------------------------------------

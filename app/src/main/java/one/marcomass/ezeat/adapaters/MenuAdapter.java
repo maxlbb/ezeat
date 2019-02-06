@@ -18,6 +18,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 import one.marcomass.ezeat.CartInterface;
 import one.marcomass.ezeat.R;
@@ -70,14 +71,14 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 break;
             default:
                 final MenuHolder menuHolder = (MenuHolder) holder;
-                menuHolder.bindDish((Dish)dataSet.get(position));
+                menuHolder.bindDish((Dish)dataSet.get(position), menuFragment);
                 //TODO optimize wiht onCreateViewHolder
-                menuHolder.rootView.setOnClickListener(new View.OnClickListener() {
+                /*menuHolder.rootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         menuFragment.addToCart((Dish) dataSet.get(menuHolder.getAdapterPosition()));
                     }
-                });
+                });*/
         }
     }
 
@@ -115,7 +116,7 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             rootView = view;
         }
 
-        public void bindDish(Dish dish) {
+        public void bindDish(final Dish dish, final MenuFragment menuFragment) {
             textName.setText(dish.getName());
             textPrice.setText(dish.getPrice() + "€");
             //TODO ottimizzare col ViewHolder
@@ -141,6 +142,13 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
                     });
                     widthAnimator.start();
+                    menuFragment.addToCart(dish);
+                    menuFragment.getMainViewModel().getCartDishCount(dish.getID()).observe(menuFragment, new Observer<Integer>() {
+                        @Override
+                        public void onChanged(Integer integer) {
+                            textDishCount.setText(integer+"");
+                        }
+                    });
                 }
             });
         }

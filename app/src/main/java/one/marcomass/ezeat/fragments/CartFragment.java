@@ -40,7 +40,7 @@ public class CartFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_cart, container, false);
 
         textCount = rootView.findViewById(R.id.text_count_cart);
-        mainViewModel.getCartDishCount().observe(this, new Observer<Integer>() {
+        mainViewModel.getCartAllDishCount().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 textCount.setText("Hai inserito " + integer + " oggetti");
