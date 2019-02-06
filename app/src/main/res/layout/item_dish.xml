@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.MaterialComponents.CardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingTop="24dp"
+            android:paddingRight="32dp"
+            android:paddingBottom="24dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/image_restaurant_logo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@color/colorPrimaryDark" />
+
+
+            <TextView
+                android:id="@+id/text_dish_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Nome piatto"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/image_restaurant_logo"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+            <!--
+            <RatingBar
+                android:id="@+id/rating_dish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:numStars="5"
+                android:rating="4"
+                android:layout_above="@id/text_dish_quantity"
+                android:clickable="false"
+                style="@style/Widget.AppCompat.RatingBar.Small" />
+            -->
+            <TextView
+                android:id="@+id/text_dish_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@color/redBack"
+                android:text="9.99€"/>
+
+            <TextView
+                android:id="@+id/text_dish_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/text_dish_price"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:text="250g"
+                android:layout_alignLeft="@id/text_dish_name"/>
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- TODO togliere
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/frame_icon_restaurant"
+        android:elevation="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/image_restaurant_logo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryDark" />
+
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+    -->
+
+    <FrameLayout
+        android:id="@+id/frame_action_container"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:padding="8dp"
+        android:background="@drawable/button_rounded"
+        android:elevation="8dp"
+        android:focusable="true">
+
+        <ImageButton
+            android:id="@+id/button_remove_dish"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="top|center_horizontal"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_remove_red"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/text_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:layout_gravity="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/button_add_dish"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_add_black_24dp" />
+
+    </FrameLayout>
+
+
+</RelativeLayout>

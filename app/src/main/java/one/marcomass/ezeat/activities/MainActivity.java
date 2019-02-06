@@ -2,7 +2,11 @@ package one.marcomass.ezeat.activities;
 
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
@@ -24,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int screenWidth;
     private int oldPage = 0;
+
+    private boolean whiteMenu = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +58,15 @@ public class MainActivity extends AppCompatActivity {
                         scale = (oldPage > 1 ? -3.0f : 2.0f);
                         viewBack.animate().scaleXBy(scale)
                                 .setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(200).start();
+                        invalidateOptionsMenu();
                         break;
                     case 2:
                         //Non serve lo scale perchè non ho scheda successiva
                         viewBack.animate().scaleXBy(3.0f)
                                 .setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(200).start();
+                        //TODO find a better way to do this
+                        whiteMenu = true;
+                        invalidateOptionsMenu();
                         break;
                 }
                 oldPage = position;
@@ -64,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewBack = findViewById(R.id.view_background);
-        viewBack.getLayoutParams().width = screenWidth/3;
+        viewBack.getLayoutParams().width = screenWidth / 3;
 
         //TEST VIEWMODEL
         MainViewModel mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -74,5 +84,30 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(integer);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem itemRed = menu.findItem(R.id.action_cart);
+        MenuItem itemWhite = menu.findItem(R.id.action_cart_white);
+
+        if(whiteMenu) {
+            itemRed.setVisible(false);
+            itemWhite.setVisible(true);
+            Log.d("page", "try");
+            whiteMenu = false;
+        } else {
+            itemRed.setVisible(true);
+            itemWhite.setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 }

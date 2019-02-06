@@ -4,10 +4,12 @@ public class Restaurant {
 
     private final String name;
     private final String description;
+    private final int ID;
 
-    public Restaurant(String name, String description) {
+    public Restaurant(int ID, String name, String description) {
         this.name = name;
         this.description = description;
+        this.ID = ID;
     }
 
     public String getName() {
@@ -16,5 +18,9 @@ public class Restaurant {
 
     public String getDescription() {
         return description;
+    }
+
+    public int getID() {
+        return ID;
     }
 }

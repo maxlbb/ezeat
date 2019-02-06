@@ -39,7 +39,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
         View rootView = inflater.inflate(R.layout.fragment_restaurants, container, false);
         recyclerRestaurants = rootView.findViewById(R.id.recycler_main_restaurants);
         recyclerRestaurants.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapterRestaurants = new RestaurantsAdapter(mainVM.getData(), this);
+        adapterRestaurants = new RestaurantsAdapter(mainVM.getRestaurantMock(), this);
         recyclerRestaurants.setAdapter(adapterRestaurants);
         return rootView;
     }

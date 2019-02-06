@@ -24,7 +24,8 @@
             android:paddingLeft="56dp"
             android:paddingTop="16dp"
             android:paddingRight="48dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
 
             <TextView
                 android:id="@+id/text_restaurant_name"

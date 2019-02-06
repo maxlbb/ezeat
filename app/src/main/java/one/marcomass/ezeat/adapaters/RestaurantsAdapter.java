@@ -54,7 +54,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
                 public void onClick(View v) {
                     new ElasticAnimation.Builder().setView(rootView)
                             .setScaleX(0.85f).setScaleY(0.85f).setDuration(200).doAction();
-                    switchPageListener.switchPage(new Restaurant("Cliccato", "finto"));
+                    switchPageListener.switchPage(new Restaurant(0,"Cliccato", "finto"));
                 }
             });
         }

@@ -6,14 +6,22 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import one.marcomass.ezeat.models.Cart;
+import one.marcomass.ezeat.models.Dish;
 import one.marcomass.ezeat.models.Restaurant;
 import one.marcomass.ezeat.models.RestaurantMenu;
 
 
 public class MainViewModel extends ViewModel {
     private MutableLiveData<Integer> currentPage;
-    private MutableLiveData<RestaurantMenu> restaurantMenu;
-    private MutableLiveData<List<Restaurant>> restaurantList;
+    private MutableLiveData<ArrayList<Object>> restaurantMenu;
+    private MutableLiveData<ArrayList<Restaurant>> restaurantList;
+    private MutableLiveData<ArrayList<Dish>> cartDishes;
+    private Cart cart;
+
+    public MainViewModel() {
+        cart = new Cart();
+    }
 
     public LiveData<Integer> getCurrentPage() {
         if (currentPage == null) {
@@ -23,40 +31,79 @@ public class MainViewModel extends ViewModel {
         return currentPage;
     }
 
-    public LiveData<RestaurantMenu> getRestaurantMenu() {
+    public LiveData<ArrayList<Object>> getRestaurantMenu() {
         if (restaurantMenu == null) {
             restaurantMenu = new MutableLiveData<>();
             //TODO chiamata API
+            restaurantMenu.setValue(getMenuMock());
         }
         return restaurantMenu;
     }
 
-    public LiveData<List<Restaurant>> getRestaurantList() {
+    public LiveData<ArrayList<Restaurant>> getRestaurantList() {
         if (restaurantList == null) {
             restaurantList = new MutableLiveData<>();
             //TODO chiamata API
-            restaurantList.setValue(getData());
+            restaurantList.setValue(getRestaurantMock());
         }
         return restaurantList;
     }
 
+    public LiveData<Integer> getCartDishCount() {
+        if (cart == null) {
+            cart = new Cart();
+            return cart.getDishCount();
+        }
+        return cart.getDishCount();
+    }
+
+    public LiveData<ArrayList<Dish>> getCartDishes() {
+        if (cartDishes == null) {
+            cartDishes = new MutableLiveData<>();
+            cartDishes.setValue(cart.getDishes());
+        }
+        return cartDishes;
+    }
+
+    public void addDishToCart(Dish dish) {
+        cart.addDish(dish);
+    }
+
     public void setSelectRestaurant(Restaurant restaurant) {
         currentPage.setValue(1);
-
     }
 
 
-    public ArrayList<Restaurant> getData() {
+    public ArrayList<Restaurant> getRestaurantMock() {
         ArrayList<Restaurant> dataSource = new ArrayList<>();
-        dataSource.add(new Restaurant("Primo", "Descrizione del primo ristorante"));
-        dataSource.add(new Restaurant("Secondo", "Descrizione del secondo ristorante"));
-        dataSource.add(new Restaurant("Terzo", "Descrizione del terzo ristorante"));
-        dataSource.add(new Restaurant("Quarto", "Descrizione del quarto ristorante"));
-        dataSource.add(new Restaurant("Quinto", "Descrizione del quinto ristorante"));
-        dataSource.add(new Restaurant("Sesto", "Descrizione del sesto ristorante"));
-        dataSource.add(new Restaurant("Settimo", "Descrizione del settimo ristorante"));
-        dataSource.add(new Restaurant("Ottavo", "Descrizione del ottavo ristorante"));
-        dataSource.add(new Restaurant("Nono", "Descrizione del nono ristorante"));
+        dataSource.add(new Restaurant(0, "Primo", "Descrizione del primo ristorante"));
+        dataSource.add(new Restaurant(1, "Secondo", "Descrizione del secondo ristorante"));
+        dataSource.add(new Restaurant(2, "Terzo", "Descrizione del terzo ristorante"));
+        dataSource.add(new Restaurant(3, "Quarto", "Descrizione del quarto ristorante"));
+        dataSource.add(new Restaurant(4, "Quinto", "Descrizione del quinto ristorante"));
+        dataSource.add(new Restaurant(5, "Sesto", "Descrizione del sesto ristorante"));
+        dataSource.add(new Restaurant(6, "Settimo", "Descrizione del settimo ristorante"));
+        dataSource.add(new Restaurant(7, "Ottavo", "Descrizione del ottavo ristorante"));
+        dataSource.add(new Restaurant(8, "Nono", "Descrizione del nono ristorante"));
+        return dataSource;
+    }
+
+    public ArrayList<Object> getMenuMock() {
+        ArrayList<Object> dataSource = new ArrayList<>();
+        dataSource.add("Primi");
+        dataSource.add(new Dish("Pasta", 4.99f, "Primo", 3));
+        dataSource.add(new Dish("Lasagne", 4.99f, "Primo", 4));
+        dataSource.add(new Dish("Gnocchi", 4.99f, "Primo", 5));
+        dataSource.add("Secondi");
+        dataSource.add(new Dish("Coscia di pollo", 4.99f, "Secondo", 4));
+        dataSource.add(new Dish("Uovo sbattuto", 4.99f, "Secondo", 4));
+        dataSource.add(new Dish("Vitello tonnato", 4.99f, "Secondo", 5));
+        dataSource.add("Bevande");
+        dataSource.add(new Dish("Acqua", 4.99f, "Bevanda", 2));
+        dataSource.add(new Dish("Cocacola", 4.99f, "Bevanda", 5));
+        dataSource.add(new Dish("Fanta", 4.99f, "Bevanda", 5));
+        dataSource.add(new Dish("Birra", 4.99f, "Bevanda", 2));
+        dataSource.add(new Dish("Vino", 4.99f, "Bevanda", 5));
         return dataSource;
     }
 }
