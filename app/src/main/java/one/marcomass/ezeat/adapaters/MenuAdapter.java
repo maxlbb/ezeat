@@ -71,6 +71,7 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             default:
                 final MenuHolder menuHolder = (MenuHolder) holder;
                 menuHolder.bindDish((Dish)dataSet.get(position));
+                //TODO optimize wiht onCreateViewHolder
                 menuHolder.rootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

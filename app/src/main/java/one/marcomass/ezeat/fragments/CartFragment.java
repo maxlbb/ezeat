@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +18,14 @@ import androidx.lifecycle.ViewModelProviders;
 import one.marcomass.ezeat.CartInterface;
 import one.marcomass.ezeat.MainViewModel;
 import one.marcomass.ezeat.R;
+import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Dish;
 
 public class CartFragment extends Fragment {
 
     private TextView textCount;
+    private TextView textList;
+    private Button buttonCart;
     private MainViewModel mainViewModel;
 
     @Override
@@ -40,6 +46,24 @@ public class CartFragment extends Fragment {
                 textCount.setText("Hai inserito " + integer + " oggetti");
             }
         });
+
+        textList = rootView.findViewById(R.id.text_list);
+        mainViewModel.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
+            @Override
+            public void onChanged(List<DishEntity> dishEntities) {
+                textList.setText(dishEntities.toString());
+            }
+        });
+
+        buttonCart = rootView.findViewById(R.id.button_empty_cart);
+        buttonCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainViewModel.removeAllFromCart();
+            }
+        });
+
+
 
         return rootView;
     }

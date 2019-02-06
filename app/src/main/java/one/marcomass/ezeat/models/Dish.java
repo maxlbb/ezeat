@@ -9,12 +9,13 @@ public class Dish {
     private int ID;
     private int quantity;
 
-    public Dish(String name, float price, String category, int rating) {
+    public Dish(String name, float price, String category, int rating, int ID) {
         this.name = name;
         this.price = price;
         this.category = category;
         this.rating = rating;
         this.quantity = 0;
+        this.ID = ID;
     }
 
     public String getName() {
@@ -33,5 +34,9 @@ public class Dish {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public int getID() {
+        return ID;
     }
 }
