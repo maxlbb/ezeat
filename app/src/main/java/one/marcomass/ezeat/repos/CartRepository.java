@@ -2,6 +2,7 @@ package one.marcomass.ezeat.repos;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
@@ -20,15 +21,19 @@ public class CartRepository {
         cartDAO = cartRoomDatabase.cartDAO();
     }
 
+    public LiveData<Integer> getDishQuantity(int dishID) {
+        return cartDAO.getDishQuantity(dishID);
+    }
+
     public LiveData<List<DishEntity>> getAllDishes() {
         return cartDAO.getAllDishes();
     }
 
-    public LiveData<Integer> getDishCount(int dishID) {
+    public LiveData<DishEntity> getDishCount(int dishID) {
         return cartDAO.getDishCount(dishID);
     }
 
-    public void insert(DishEntity dish) {
+    public void add(DishEntity dish) {
         new insertAsyncTask(cartDAO).execute(dish);
     }
 
@@ -50,7 +55,14 @@ public class CartRepository {
 
         @Override
         protected Void doInBackground(final DishEntity... params) {
-            mAsyncTaskDao.insertDish(params[0]);
+            DishEntity dish = mAsyncTaskDao.getDishByID(params[0].getDishID());
+            if (dish != null) {
+                mAsyncTaskDao.addDish(dish.getDishID());
+                Log.d("add_room", "adding");
+            } else {
+                Log.d("add_room", "inserting");
+                mAsyncTaskDao.insertDish(params[0]);
+            }
             return null;
         }
     }

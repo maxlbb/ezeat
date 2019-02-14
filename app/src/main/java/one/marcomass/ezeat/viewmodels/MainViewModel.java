@@ -1,9 +1,10 @@
-package one.marcomass.ezeat;
+package one.marcomass.ezeat.viewmodels;
 
 import android.app.Application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
@@ -23,14 +24,15 @@ import one.marcomass.ezeat.repos.CartRepository;
 
 public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> currentPage;
-    private MutableLiveData<ArrayList<Object>> restaurantMenu;
+    private MutableLiveData<List<Object>> restaurantMenu;
     private MutableLiveData<ArrayList<Restaurant>> restaurantList;
     private Cart cart;
 
     private CartRepository cartRepository;
     private LiveData<List<DishEntity>> allDishes;
     private LiveData<Integer> cartAllDishCount;
-    private LiveData<Integer> cartDishCount;
+    private List<LiveData<DishEntity>> countList;
+
 
     public MainViewModel(Application application) {
         super(application);
@@ -44,6 +46,8 @@ public class MainViewModel extends AndroidViewModel {
             }
         });
 
+        countList = new ArrayList<>();
+
         currentPage = new MutableLiveData<>();
         currentPage.setValue(0);
     }
@@ -55,7 +59,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void addDishToCart(Dish dish) {
-        cartRepository.insert(new DishEntity(0, dish.getID()));
+        cartRepository.add(new DishEntity(0, dish.getID(), 1));
     }
 
     public void removeAllFromCart() {
@@ -70,8 +74,19 @@ public class MainViewModel extends AndroidViewModel {
         return cartAllDishCount;
     }
 
-    public LiveData<Integer> getCartDishCount(int dishID) {
+    public LiveData<DishEntity> getCartDishCount(final int dishID) {
         return cartRepository.getDishCount(dishID);
+    }
+
+    public LiveData<Integer> getDishQuantity(int dishID) {
+        return cartRepository.getDishQuantity(dishID);
+    }
+
+    //TODO API or something from repo
+    public LiveData<Dish> getDishFromID(int dishID) {
+        MutableLiveData<Dish> dish = new MutableLiveData<>();
+        dish.setValue(findInMenuMock(dishID));
+        return dish;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -79,7 +94,8 @@ public class MainViewModel extends AndroidViewModel {
     public LiveData<Integer> getCurrentPage() {
         return currentPage;
     }
-    public LiveData<ArrayList<Object>> getRestaurantMenu() {
+
+    public LiveData<List<Object>> getRestaurantMenu() {
         if (restaurantMenu == null) {
             restaurantMenu = new MutableLiveData<>();
             //TODO chiamata API
@@ -104,19 +120,61 @@ public class MainViewModel extends AndroidViewModel {
 
     public ArrayList<Restaurant> getRestaurantMock() {
         ArrayList<Restaurant> dataSource = new ArrayList<>();
-        dataSource.add(new Restaurant(0, "Primo", "Descrizione del primo ristorante"));
-        dataSource.add(new Restaurant(1, "Secondo", "Descrizione del secondo ristorante"));
-        dataSource.add(new Restaurant(2, "Terzo", "Descrizione del terzo ristorante"));
-        dataSource.add(new Restaurant(3, "Quarto", "Descrizione del quarto ristorante"));
-        dataSource.add(new Restaurant(4, "Quinto", "Descrizione del quinto ristorante"));
-        dataSource.add(new Restaurant(5, "Sesto", "Descrizione del sesto ristorante"));
-        dataSource.add(new Restaurant(6, "Settimo", "Descrizione del settimo ristorante"));
-        dataSource.add(new Restaurant(7, "Ottavo", "Descrizione del ottavo ristorante"));
-        dataSource.add(new Restaurant(8, "Nono", "Descrizione del nono ristorante"));
+        dataSource.add(new Restaurant(0, "Primo", "Indirizzo 1", 8.30f, null));
+        dataSource.add(new Restaurant(1, "Secondo", "Indirizzo 2", 8.30f, null));
+        dataSource.add(new Restaurant(2, "Terzo", "Indirizzo 3", 4.50f, null));
+        dataSource.add(new Restaurant(3, "Quarto", "Indirizzo 4", 1.80f, null));
+        dataSource.add(new Restaurant(4, "Quinto", "Indirizzo 5", 8.30f, null));
+        dataSource.add(new Restaurant(5, "Sesto", "Indirizzo 6", 6.30f, null));
+        dataSource.add(new Restaurant(6, "Settimo", "Indirizzo 7", 8.30f, null));
+        dataSource.add(new Restaurant(7, "Ottavo", "Indirizzo 8", 13.40f, null));
+        dataSource.add(new Restaurant(8, "Nono", "Indirizzo 9", 21.89f, null));
         return dataSource;
     }
 
-    public ArrayList<Object> getMenuMock() {
+    public List<Object> getMenuMock() {
+        List<Object> dataSource = new ArrayList<>();
+        Dish dish;
+        //dataSource.add("Primi");
+        dish = new Dish("Pasta", 4.99f, "Primo", 3, 0);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Lasagne", 4.99f, "Primo", 4, 1);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Gnocchi", 4.99f, "Primo", 5, 2);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        //dataSource.add("Secondi");
+        dish = new Dish("Coscia di pollo", 4.99f, "Secondo", 4, 3);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Uovo sbattuto", 4.99f, "Secondo", 4, 4);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Vitello tonnato", 4.99f, "Secondo", 5, 5);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        //dataSource.add("Bevande");
+        dish = new Dish("Acqua", 4.99f, "Bevanda", 2, 6);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Cocacola", 4.99f, "Bevanda", 5, 7);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Fanta", 4.99f, "Bevanda", 5, 8);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Birra", 4.99f, "Bevanda", 2, 9);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        dish = new Dish("Vino", 4.99f, "Bevanda", 5, 10);
+        dish.setLiveQuantity(this);
+        dataSource.add(dish);
+        return dataSource;
+    }
+
+    public Dish findInMenuMock(int dishID) {
         ArrayList<Object> dataSource = new ArrayList<>();
         dataSource.add("Primi");
         dataSource.add(new Dish("Pasta", 4.99f, "Primo", 3, 0));
@@ -132,6 +190,12 @@ public class MainViewModel extends AndroidViewModel {
         dataSource.add(new Dish("Fanta", 4.99f, "Bevanda", 5, 8));
         dataSource.add(new Dish("Birra", 4.99f, "Bevanda", 2, 9));
         dataSource.add(new Dish("Vino", 4.99f, "Bevanda", 5, 10));
-        return dataSource;
+
+        for (Object dish : dataSource) {
+            if (dish instanceof Dish && ((Dish)dish).getID() == dishID) {
+                return (Dish) dish;
+            }
+        }
+        return null;
     }
 }

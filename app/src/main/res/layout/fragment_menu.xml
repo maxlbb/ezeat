@@ -1,20 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/image_restaurant_logo"
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher_background" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:visibility="gone">
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!--
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top" />
+
+    </androidx.viewpager.widget.ViewPager>
+    -->
 
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progress_menu"
         android:layout_width="56dp"
-        android:layout_height="56dp" />
+        android:layout_height="56dp"
+        android:layout_centerInParent="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_menu"
+        android:layout_below="@id/image_restaurant_logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="56dp"
-        android:clipToPadding="false"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
-</LinearLayout>
+</RelativeLayout>

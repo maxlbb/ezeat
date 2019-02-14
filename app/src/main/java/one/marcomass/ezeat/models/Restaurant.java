@@ -3,12 +3,16 @@ package one.marcomass.ezeat.models;
 public class Restaurant {
 
     private final String name;
-    private final String description;
+    private final String address;
+    private final float minOrder;
+    private final String imageURL;
     private final int ID;
 
-    public Restaurant(int ID, String name, String description) {
+    public Restaurant(int ID, String name, String address, float minOrder, String imageURL) {
         this.name = name;
-        this.description = description;
+        this.address = address;
+        this.minOrder = minOrder;
+        this.imageURL = imageURL;
         this.ID = ID;
     }
 
@@ -16,11 +20,19 @@ public class Restaurant {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getAddress() {
+        return address;
+    }
+
+    public float getMinOrder() {
+        return minOrder;
     }
 
     public int getID() {
         return ID;
+    }
+
+    public String getImageURL() {
+        return imageURL;
     }
 }

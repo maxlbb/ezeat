@@ -8,20 +8,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
-import one.marcomass.ezeat.MainViewModel;
+import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
-import one.marcomass.ezeat.SwitchPage;
-import one.marcomass.ezeat.adapaters.ViewPagerAdapter;
+import one.marcomass.ezeat.Util;
+import one.marcomass.ezeat.fragments.MenuFragment;
+import one.marcomass.ezeat.fragments.RestaurantFragment;
 import one.marcomass.ezeat.models.Restaurant;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RestaurantFragment.RestaurantSelector {
 
     private ViewPager viewPager;
     private View viewBack;
@@ -31,16 +29,25 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean whiteMenu = false;
 
+    private MainViewModel mainVM;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RestaurantFragment restaurantFragment = new RestaurantFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, restaurantFragment);
+        fragmentTransaction.commit();
+
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         screenWidth = size.x;
 
+        /*
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -77,13 +84,14 @@ public class MainActivity extends AppCompatActivity {
         viewBack.getLayoutParams().width = screenWidth / 3;
 
         //TEST VIEWMODEL
-        MainViewModel mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
+        mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
         mainVM.getCurrentPage().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 viewPager.setCurrentItem(integer);
             }
         });
+        */
     }
 
     @Override
@@ -91,6 +99,14 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        mainVM.removeAllFromCart();
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -109,5 +125,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    //TODO change params
+    @Override
+    public void selectRestaurant(Restaurant restaurant) {
+        MenuFragment menuFragment = new MenuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Util.RESTAURANT_ID, restaurant.getID());
+        menuFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, menuFragment);
+        fragmentTransaction.addToBackStack("fragment_menu");
+        fragmentTransaction.commit();
     }
 }
