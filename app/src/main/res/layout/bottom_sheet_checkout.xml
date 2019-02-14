@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_checkout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bottom_sheet_checkout"
+    android:elevation="8dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:clipToPadding="false" >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/text_checkout_min_order"
+        android:layout_above="@id/text_checkout_total"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Riepilogo ordine"
+        android:layout_marginLeft="32dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+        android:textSize="16dp"/>
+
+    <TextView
+        android:id="@+id/text_checkout_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_checkout_order"
+        android:layout_alignParentRight="true"
+        android:text="0€"
+        android:layout_marginRight="32dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_checkout_order"
+        android:layout_alignParentLeft="true"
+        android:text="Totale:"
+        android:layout_marginLeft="32dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+    <TextView
+        android:id="@+id/text_checkout_min_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="32dp"
+        android:text="min: 9.00"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+    <Button
+        android:id="@+id/button_checkout_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="ordina"
+        android:textColor="@android:color/white"
+        android:background="@drawable/background_button_order"
+        android:layout_marginTop="8dp"
+        android:foreground="?attr/selectableItemBackground"/>
+
+</RelativeLayout>

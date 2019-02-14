@@ -1,17 +1,15 @@
 package one.marcomass.ezeat.activities;
 
-import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.RelativeLayout;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
@@ -21,14 +19,6 @@ import one.marcomass.ezeat.models.Restaurant;
 
 public class MainActivity extends AppCompatActivity implements RestaurantFragment.RestaurantSelector {
 
-    private ViewPager viewPager;
-    private View viewBack;
-
-    private int screenWidth;
-    private int oldPage = 0;
-
-    private boolean whiteMenu = false;
-
     private MainViewModel mainVM;
 
     @Override
@@ -36,18 +26,35 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+        bottomSheetLayout = findViewById(R.id.bottom_sheet_checkout);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+        */
+
         RestaurantFragment restaurantFragment = new RestaurantFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, restaurantFragment);
         fragmentTransaction.commit();
 
-
+        /*
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         screenWidth = size.x;
 
-        /*
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -114,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         MenuItem itemRed = menu.findItem(R.id.action_cart);
         MenuItem itemWhite = menu.findItem(R.id.action_cart_white);
 
+        /*
         if(whiteMenu) {
             itemRed.setVisible(false);
             itemWhite.setVisible(true);
@@ -123,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             itemRed.setVisible(true);
             itemWhite.setVisible(false);
         }
+        */
 
         return super.onPrepareOptionsMenu(menu);
     }

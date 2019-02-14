@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="56dp"
+        android:paddingBottom="56dp"
         android:clipToPadding="false"/>
 
 </RelativeLayout>
