@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,10 +23,13 @@ import one.marcomass.ezeat.models.Restaurant;
 
 public class RestaurantFragment extends Fragment implements SwitchPage {
 
+    private TextView textHeader;
     private RecyclerView recyclerRestaurants;
     private RestaurantsAdapter adapterRestaurants;
     private LinearLayoutManager linearLayoutManager;
     private MainViewModel mainVM;
+
+    private List<Restaurant> restaurants;
 
     private RestaurantSelector restListener;
 
@@ -50,17 +56,19 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
         recyclerRestaurants = rootView.findViewById(R.id.recycler_main_restaurants);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerRestaurants.setLayoutManager(linearLayoutManager);
-        adapterRestaurants = new RestaurantsAdapter(mainVM.getRestaurantMock(), restListener);
+        restaurants = mainVM.getRestaurantMock();
+        adapterRestaurants = new RestaurantsAdapter(restaurants, restListener);
         recyclerRestaurants.setAdapter(adapterRestaurants);
 
-        /*DividerItemDecoration divider = new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation());
-        recyclerRestaurants.addItemDecoration(divider);*/
+        textHeader = rootView.findViewById(R.id.text_restaurant_header);
+        textHeader.setText("Tutti i ristoranti (" + restaurants.size() + ")");
+
         return rootView;
     }
 
     @Override
     public void switchPage(Restaurant restaurant) {
-        mainVM.setSelectRestaurant(restaurant);
+        //mainVM.setSelectRestaurant(restaurant);
     }
 
     public interface RestaurantSelector {

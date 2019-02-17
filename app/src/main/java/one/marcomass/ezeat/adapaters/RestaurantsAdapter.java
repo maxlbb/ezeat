@@ -15,17 +15,14 @@ import one.marcomass.ezeat.fragments.RestaurantFragment;
 import one.marcomass.ezeat.models.Restaurant;
 
 
-public class RestaurantsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    public static final int HEADER_ID = 100;
-    public static final int RESTAURANT_ID = 101;
+public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.RestaurantHolder> {
 
     public final List<Restaurant> restaurantList;
     private final RestaurantFragment.RestaurantSelector restListener;
 
     public RestaurantsAdapter(List<Restaurant> restaurantList, RestaurantFragment.RestaurantSelector restListener) {
         this.restaurantList = restaurantList;
-        this.restaurantList.add(0, new Restaurant(0, "Tutti i ristoranti", "", 0, ""));
+        //this.restaurantList.add(0, new Restaurant(0, "Tutti i ristoranti", "", 0, ""));
         this.restListener = restListener;
     }
 
@@ -68,52 +65,18 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public class HeaderHolder extends RecyclerView.ViewHolder {
-
-        private TextView textHeader;
-
-        public HeaderHolder(@NonNull View itemView) {
-            super(itemView);
-            textHeader = itemView.findViewById(R.id.text_restaurant_header);
-        }
-
-        public void bindData(String title) {
-            this.textHeader.setText(title + " (" + restaurantList.size() + ")");
-        }
-    }
-
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        RecyclerView.ViewHolder holder;
-        if (viewType == HEADER_ID) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.header_restaurant, parent, false);
-            holder = new HeaderHolder(view);
-        } else {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_restaurant, parent, false);
-            holder = new RestaurantHolder(view);
-        }
+    public RestaurantHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_restaurant, parent, false);
+        RestaurantHolder holder = new RestaurantHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == RESTAURANT_ID) {
-            ((RestaurantHolder) holder).bindData(restaurantList.get(position));
-        } else {
-            ((HeaderHolder) holder).bindData(restaurantList.get(position).getName());
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0) {
-            return HEADER_ID;
-        }
-        return RESTAURANT_ID;
+    public void onBindViewHolder(@NonNull RestaurantHolder holder, int position) {
+        holder.bindData(restaurantList.get(position));
     }
 
     @Override
