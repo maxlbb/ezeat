@@ -108,34 +108,6 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        mainVM.removeAllFromCart();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem itemRed = menu.findItem(R.id.action_cart);
-        MenuItem itemWhite = menu.findItem(R.id.action_cart_white);
-
-        /*
-        if(whiteMenu) {
-            itemRed.setVisible(false);
-            itemWhite.setVisible(true);
-            Log.d("page", "try");
-            whiteMenu = false;
-        } else {
-            itemRed.setVisible(true);
-            itemWhite.setVisible(false);
-        }
-        */
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
     //TODO change params
     @Override
     public void selectRestaurant(Restaurant restaurant) {

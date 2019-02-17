@@ -15,12 +15,12 @@ import one.marcomass.ezeat.fragments.RestaurantFragment;
 import one.marcomass.ezeat.models.Restaurant;
 
 
-public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.RestaurantHolder> {
+public class RestaurantsGridAdapter extends RecyclerView.Adapter<RestaurantsGridAdapter.RestaurantHolder> {
 
     public final List<Restaurant> restaurantList;
     private final RestaurantFragment.RestaurantSelector restListener;
 
-    public RestaurantsAdapter(List<Restaurant> restaurantList, RestaurantFragment.RestaurantSelector restListener) {
+    public RestaurantsGridAdapter(List<Restaurant> restaurantList, RestaurantFragment.RestaurantSelector restListener) {
         this.restaurantList = restaurantList;
         this.restListener = restListener;
     }
@@ -28,15 +28,11 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
     public class RestaurantHolder extends RecyclerView.ViewHolder {
 
         private TextView textName;
-        private TextView textAddress;
-        private TextView textMinOrder;
         private ImageView imageLogo;
 
         public RestaurantHolder(View view) {
             super(view);
             textName = view.findViewById(R.id.text_restaurant_name);
-            textAddress = view.findViewById(R.id.text_restaurant_address);
-            textMinOrder = view.findViewById(R.id.text_restaurant_min_price);
             imageLogo = view.findViewById(R.id.image_restaurant_logo);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -49,18 +45,6 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
 
         public void bindData(Restaurant restaurant) {
             textName.setText(restaurant.getName());
-            textAddress.setText(restaurant.getAddress());
-            textMinOrder.setText(restaurant.getMinOrder() + " min");
-            /*
-            //TODO implementing custom animation, remove library dependency - DA RIVALUTARE
-            rootView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new ElasticAnimation.Builder().setView(rootView)
-                            .setScaleX(0.85f).setScaleY(0.85f).setDuration(200).doAction();
-                    switchPageListener.switchPage(new Restaurant(0,"Cliccato", "finto"));
-                }
-            });*/
         }
     }
 
@@ -68,7 +52,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
     @Override
     public RestaurantHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_restaurant, parent, false);
+                .inflate(R.layout.item_restaurant_grid, parent, false);
         RestaurantHolder holder = new RestaurantHolder(view);
         return holder;
     }
@@ -83,3 +67,4 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
         return restaurantList.size();
     }
 }
+

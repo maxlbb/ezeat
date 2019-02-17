@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_grid"
+        android:icon="@drawable/ic_grid_white"
+        android:title="Grid"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_linear"
+        android:icon="@drawable/ic_linear_white"
+        android:visible="false"
+        android:title="Linear"
+        app:showAsAction="always" />
+
+</menu>

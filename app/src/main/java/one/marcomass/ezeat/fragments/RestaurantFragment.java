@@ -3,6 +3,9 @@ package one.marcomass.ezeat.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import one.marcomass.ezeat.adapaters.RestaurantsGridAdapter;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.SwitchPage;
@@ -26,12 +31,15 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
     private TextView textHeader;
     private RecyclerView recyclerRestaurants;
     private RestaurantsAdapter adapterRestaurants;
-    private LinearLayoutManager linearLayoutManager;
+    private RestaurantsGridAdapter restaurantsGridAdapter;
+    private GridLayoutManager gridLayoutManager;
     private MainViewModel mainVM;
 
     private List<Restaurant> restaurants;
 
     private RestaurantSelector restListener;
+
+    private boolean gridMenu = true;
 
     @Override
     public void onAttach(Context context) {
@@ -46,6 +54,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mainVM = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     }
 
@@ -54,11 +63,12 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
         recyclerRestaurants = rootView.findViewById(R.id.recycler_main_restaurants);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerRestaurants.setLayoutManager(linearLayoutManager);
+        gridLayoutManager = new GridLayoutManager(getContext(), 1);
         restaurants = mainVM.getRestaurantMock();
         adapterRestaurants = new RestaurantsAdapter(restaurants, restListener);
-        recyclerRestaurants.setAdapter(adapterRestaurants);
+        restaurantsGridAdapter = new RestaurantsGridAdapter(restaurants, restListener);
+        recyclerRestaurants.setLayoutManager(gridLayoutManager);
+        switchLayout(!gridMenu);
 
         textHeader = rootView.findViewById(R.id.text_restaurant_header);
         textHeader.setText("Tutti i ristoranti (" + restaurants.size() + ")");
@@ -73,5 +83,52 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
 
     public interface RestaurantSelector {
         void selectRestaurant(Restaurant restaurant);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (gridMenu) {
+            menu.findItem(R.id.action_grid).setVisible(true);
+            menu.findItem(R.id.action_linear).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_grid).setVisible(false);
+            menu.findItem(R.id.action_linear).setVisible(true);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.restaurants_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_grid:
+                gridMenu = false;
+                switchLayout(true);
+                getActivity().invalidateOptionsMenu();
+                return true;
+            case R.id.action_linear:
+                gridMenu = true;
+                switchLayout(false);
+                getActivity().invalidateOptionsMenu();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void switchLayout(boolean toGrid) {
+        if (toGrid) {
+            recyclerRestaurants.setAdapter(restaurantsGridAdapter);
+            gridLayoutManager.setSpanCount(2);
+        } else {
+            gridLayoutManager.setSpanCount(1);
+            recyclerRestaurants.setAdapter(adapterRestaurants);
+        }
     }
 }
