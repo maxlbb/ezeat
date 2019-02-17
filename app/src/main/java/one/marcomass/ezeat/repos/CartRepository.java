@@ -29,10 +29,6 @@ public class CartRepository {
         return cartDAO.getAllDishes();
     }
 
-    public LiveData<DishEntity> getDishCount(int dishID) {
-        return cartDAO.getDishCount(dishID);
-    }
-
     public void add(DishEntity dish) {
         new insertAsyncTask(cartDAO).execute(dish);
     }

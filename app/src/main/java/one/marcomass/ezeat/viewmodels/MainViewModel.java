@@ -23,33 +23,29 @@ import one.marcomass.ezeat.repos.CartRepository;
 
 
 public class MainViewModel extends AndroidViewModel {
-    private MutableLiveData<Integer> currentPage;
     private MutableLiveData<List<Object>> restaurantMenu;
     private MutableLiveData<ArrayList<Restaurant>> restaurantList;
-    private Cart cart;
 
     private CartRepository cartRepository;
     private LiveData<List<DishEntity>> allDishes;
     private LiveData<Integer> cartAllDishCount;
-    private List<LiveData<DishEntity>> countList;
 
 
     public MainViewModel(Application application) {
         super(application);
-        cart = new Cart();
         cartRepository = new CartRepository(application);
         allDishes = cartRepository.getAllDishes();
+
         cartAllDishCount = Transformations.map(allDishes, new Function<List<DishEntity>, Integer>() {
             @Override
             public Integer apply(List<DishEntity> input) {
-                return input.size();
+                int totalQuantity = 0;
+                for (DishEntity dishEntity : input) {
+                    totalQuantity += dishEntity.getQuantity();
+                }
+                return totalQuantity;
             }
         });
-
-        countList = new ArrayList<>();
-
-        currentPage = new MutableLiveData<>();
-        currentPage.setValue(0);
     }
 
     //Cart management ------------------------------------------------------------------------------
@@ -74,10 +70,6 @@ public class MainViewModel extends AndroidViewModel {
         return cartAllDishCount;
     }
 
-    public LiveData<DishEntity> getCartDishCount(final int dishID) {
-        return cartRepository.getDishCount(dishID);
-    }
-
     public LiveData<Integer> getDishQuantity(int dishID) {
         return cartRepository.getDishQuantity(dishID);
     }
@@ -90,10 +82,6 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     //----------------------------------------------------------------------------------------------
-
-    public LiveData<Integer> getCurrentPage() {
-        return currentPage;
-    }
 
     public LiveData<List<Object>> getRestaurantMenu() {
         if (restaurantMenu == null) {
@@ -112,11 +100,6 @@ public class MainViewModel extends AndroidViewModel {
         }
         return restaurantList;
     }
-
-    public void setSelectRestaurant(Restaurant restaurant) {
-        currentPage.setValue(1);
-    }
-
 
     public ArrayList<Restaurant> getRestaurantMock() {
         ArrayList<Restaurant> dataSource = new ArrayList<>();

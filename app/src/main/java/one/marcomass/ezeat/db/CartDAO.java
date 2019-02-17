@@ -22,8 +22,6 @@ public interface CartDAO {
     @Query("UPDATE cart_table SET quantity = quantity + 1 WHERE dish_id = :dishID")
     void addDish(int dishID);
 
-    //@Query("DELETE FROM cart_table WHERE dish_id LIKE :dishID")
-    //@Query("DELETE FROM cart_table WHERE id = (SELECT id FROM cart_table WHERE dish_id = :dishID LIMIT 1)")
     @Query("UPDATE cart_table SET quantity = quantity - 1 WHERE dish_id = :dishID AND quantity > 0")
     void removeDish(int dishID);
 
@@ -36,13 +34,5 @@ public interface CartDAO {
 
     @Query("SELECT quantity FROM cart_table WHERE dish_id = :dishID LIMIT 1")
     LiveData<Integer> getDishQuantity(int dishID);
-
-    @Query("SELECT * FROM cart_table WHERE dish_id = :dishID")
-    LiveData<DishEntity> getDishCount(int dishID);
-
-    /* TODO create return entity with quantity
-    @Query("SELECT dish_id, count(*) FROM cart_table GROUP BY dish_id")
-    LiveData<List<DishEntity>> getAllDishes();
-    */
 
 }
