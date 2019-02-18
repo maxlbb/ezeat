@@ -1,15 +1,22 @@
 package one.marcomass.ezeat.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
@@ -26,15 +33,31 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-        bottomSheetLayout = findViewById(R.id.bottom_sheet_checkout);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+        mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
 
+        RelativeLayout bottomSheet = findViewById(R.id.fragment_checkout);
+        final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        mainVM.getBottomSheetOpen().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean open) {
+                if (open) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+
+        //TODO bad way to disable dragging
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-
+                if (i == BottomSheetBehavior.STATE_DRAGGING && mainVM.getBottomSheetOpen().getValue()) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else if (i == BottomSheetBehavior.STATE_DRAGGING && !mainVM.getBottomSheetOpen().getValue()){
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
             }
 
             @Override
@@ -42,63 +65,11 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
 
             }
         });
-        */
 
         RestaurantFragment restaurantFragment = new RestaurantFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, restaurantFragment);
         fragmentTransaction.commit();
-
-        /*
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        screenWidth = size.x;
-
-        viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                float scale = 0;
-                switch (position) {
-                    case 0:
-                        scale = (oldPage > 0 ? -2.0f : 1.0f);
-                        viewBack.animate().scaleXBy(scale)
-                                .setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(200).start();
-                        break;
-                    case 1:
-                        scale = (oldPage > 1 ? -3.0f : 2.0f);
-                        viewBack.animate().scaleXBy(scale)
-                                .setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(200).start();
-                        invalidateOptionsMenu();
-                        break;
-                    case 2:
-                        //Non serve lo scale perchè non ho scheda successiva
-                        viewBack.animate().scaleXBy(3.0f)
-                                .setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(200).start();
-                        //TODO find a better way to do this
-                        whiteMenu = true;
-                        invalidateOptionsMenu();
-                        break;
-                }
-                oldPage = position;
-            }
-        });
-
-        viewBack = findViewById(R.id.view_background);
-        viewBack.getLayoutParams().width = screenWidth / 3;
-
-        //TEST VIEWMODEL
-        mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
-        mainVM.getCurrentPage().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                viewPager.setCurrentItem(integer);
-            }
-        });
-        */
     }
 
     @Override

@@ -1,6 +1,7 @@
 package one.marcomass.ezeat.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ import one.marcomass.ezeat.repos.CartRepository;
 
 
 public class MainViewModel extends AndroidViewModel {
+    private MutableLiveData<Boolean> bottomSheetOpen;
+
     private MutableLiveData<List<Object>> restaurantMenu;
     private MutableLiveData<ArrayList<Restaurant>> restaurantList;
 
@@ -46,6 +49,9 @@ public class MainViewModel extends AndroidViewModel {
                 return totalQuantity;
             }
         });
+
+        bottomSheetOpen = new MutableLiveData<>();
+        bottomSheetOpen.setValue(false);
     }
 
     //Cart management ------------------------------------------------------------------------------
@@ -82,6 +88,14 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     //----------------------------------------------------------------------------------------------
+
+    public LiveData<Boolean> getBottomSheetOpen() {
+        return bottomSheetOpen;
+    }
+
+    public void setBottomSheetOpen(boolean open) {
+        bottomSheetOpen.setValue(open);
+    }
 
     public LiveData<List<Object>> getRestaurantMenu() {
         if (restaurantMenu == null) {
