@@ -1,5 +1,6 @@
 package one.marcomass.ezeat.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             public void onStateChanged(@NonNull View view, int i) {
                 if (i == BottomSheetBehavior.STATE_DRAGGING && mainVM.getBottomSheetOpen().getValue()) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else if (i == BottomSheetBehavior.STATE_DRAGGING && !mainVM.getBottomSheetOpen().getValue()){
+                } else if (i == BottomSheetBehavior.STATE_DRAGGING && !mainVM.getBottomSheetOpen().getValue()) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
@@ -77,6 +78,17 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_account:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //TODO change params

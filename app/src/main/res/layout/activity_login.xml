@@ -1,47 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
+    android:background="@color/colorPrimary"
+    android:gravity="top"
     android:orientation="vertical"
-    android:gravity="bottom"
     android:padding="16dp">
+
+    <TextView
+        android:id="@+id/text_login_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Login"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+        android:textColor="@android:color/white" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        android:hint="Email">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_email"
+            android:id="@+id/edit_login_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"/>
+            android:singleLine="true"
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:passwordToggleEnabled="true"
-        style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
-        android:layout_marginBottom="24dp">
+        android:hint="Username">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_password"
+            android:id="@+id/edit_login_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="#FFFFFF" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:hint="Password"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:hint="Password"/>
+            android:singleLine="true"
+            android:textColor="#FFFFFF" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/button_login_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"
-        android:text="Login"/>
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:text="Login"
+        app:cornerRadius="50dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -50,14 +82,21 @@
         android:layout_marginBottom="32dp">
 
         <TextView
+            android:id="@+id/text_login_already"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an account? "/>
+            android:text="Don't have an account? " />
 
         <TextView
+            android:id="@+id/text_login_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign up"/>
+            android:clickable="true"
+            android:focusable="true"
+            android:linksClickable="true"
+            android:text="Sign up"
+            android:textColor="@android:color/white"
+            android:textStyle="" />
     </LinearLayout>
 
 </LinearLayout>
