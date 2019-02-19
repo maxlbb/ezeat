@@ -94,8 +94,13 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
         mainViewModel.getCartTotal().observe(this, new Observer<Float>() {
             @Override
             public void onChanged(Float aFloat) {
-                textTotal.setText(String.format("%.2f", aFloat) + " €");
-                textUpTotal.setText(String.format("%.2f", aFloat) + " €");
+                if (aFloat != null) {
+                    textTotal.setText(String.format("%.2f", aFloat) + " €");
+                    textUpTotal.setText(String.format("%.2f", aFloat) + " €");
+                } else {
+                    textTotal.setText("0 €");
+                    textUpTotal.setText("0 €");
+                }
             }
         });
 
