@@ -40,6 +40,10 @@ public class Dish {
         return id;
     }
 
+    public String getImageUrl() {
+        return image_url;
+    }
+
     public LiveData<Integer> setLiveQuantity(MainViewModel viewModel) {
         if (liveQuantity == null) {
             liveQuantity = viewModel.getDishQuantity(getID());

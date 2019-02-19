@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,9 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     private LinearLayoutManager linearLayoutManager;
     private ContentLoadingProgressBar loadingProgressBar;
     private String restaurantID;
+
+    private ImageView imageLogo;
+    private TextView textMin;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

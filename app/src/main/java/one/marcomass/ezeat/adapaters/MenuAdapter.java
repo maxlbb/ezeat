@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -58,6 +61,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
         private TextView textDishCount;
         private ImageButton buttonAddDish;
         private ImageButton buttonRemoveDish;
+        private ImageView imageDish;
 
         public MenuHolder(View view) {
             super(view);
@@ -66,6 +70,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
             textDishCount = view.findViewById(R.id.text_dish_quantity);
             buttonAddDish = view.findViewById(R.id.button_add_dish);
             buttonRemoveDish = view.findViewById(R.id.button_remove_dish);
+            imageDish = view.findViewById(R.id.image_dish);
 
             buttonAddDish.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,6 +93,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
             textName.setText(dish.getName());
             textPrice.setText(dish.getPrice() + "");
             textDishCount.setText(dish.getQuantity() + "");
+            Picasso.get().load(dish.getImageUrl()).into(imageDish);
         }
     }
 
