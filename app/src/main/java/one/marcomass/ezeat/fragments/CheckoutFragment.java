@@ -109,16 +109,16 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
 
     @Override
     public void addDish(DishEntity dish) {
-        mainViewModel.addDishToCart(new Dish(dish.getName(), dish.getPrice(), "",0, dish.getDishID()));
+        mainViewModel.addDishToCart(dish);
     }
 
     @Override
-    public void removeDish(DishEntity dish) {
-        mainViewModel.removeDishFromCart(new Dish(dish.getName(), dish.getPrice(), "",0, dish.getDishID()));
+    public void removeDish(String dishID) {
+        mainViewModel.removeDishFromCart(dishID);
     }
 
     @Override
-    public void removeAllDish(DishEntity dish) {
-        mainViewModel.removeAllDishFromCart(new Dish(dish.getName(), dish.getPrice(), "",0, dish.getDishID()));
+    public void removeAllDish(String dishID) {
+        mainViewModel.removeAllDishFromCart(dishID);
     }
 }

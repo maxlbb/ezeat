@@ -51,7 +51,7 @@ public class CartFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         cartAdapter = new CartAdapter(new ArrayList<Dish>(), mainViewModel);
         recyclerView.setAdapter(cartAdapter);
-        mainViewModel.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
+        /*mainViewModel.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
             @Override
             public void onChanged(List<DishEntity> dishEntities) {
                 final List<Dish> newDataset = new ArrayList<>();
@@ -83,6 +83,8 @@ public class CartFragment extends Fragment {
                 textCount.setText(count + " oggetti nel carrello");
             }
         });
+
+        */
 
         buttonCart = rootView.findViewById(R.id.button_empty_cart);
         buttonCart.setOnClickListener(new View.OnClickListener() {

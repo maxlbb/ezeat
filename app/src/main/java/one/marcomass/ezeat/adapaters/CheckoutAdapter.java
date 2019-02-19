@@ -57,14 +57,14 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
             buttonRemoveDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cartListener.removeDish(dataSet.get(getAdapterPosition()));
+                    cartListener.removeDish(dataSet.get(getAdapterPosition()).getDishID());
                 }
             });
 
             buttonRemoveAllDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cartListener.removeAllDish(dataSet.get(getAdapterPosition()));
+                    cartListener.removeAllDish(dataSet.get(getAdapterPosition()).getDishID());
                 }
             });
         }
@@ -96,7 +96,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
 
     public interface CartManager {
         void addDish(DishEntity dish);
-        void removeDish(DishEntity dish);
-        void removeAllDish(DishEntity dish);
+        void removeDish(String dishID);
+        void removeAllDish(String dishID);
     }
 }

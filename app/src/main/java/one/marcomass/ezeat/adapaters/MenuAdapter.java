@@ -12,42 +12,43 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import one.marcomass.ezeat.R;
-import one.marcomass.ezeat.fragments.MenuFragment;
+import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Dish;
 
-public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
 
-    public List<Object> dataSet;
-    //TODO refactor with interface
-    private MenuFragment menuFragment;
+    public List<Dish> dataSet;
+    private CartManager listener;
 
-    public MenuAdapter(List<Object> menu, MenuFragment cart) {
-        this.dataSet = menu;
-        this.menuFragment = cart;
+    public MenuAdapter(List<Dish> dataSet, CartManager listener) {
+        this.dataSet = dataSet;
+        this.listener = listener;
     }
 
-    public void setDataSet(List<Object> objects) {
-        this.dataSet = objects;
+    public void setDataSet(List<Dish> newDataSet) {
+        this.dataSet = newDataSet;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MenuHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_dish, parent, false);
         return new MenuHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        final MenuHolder menuHolder = (MenuHolder) holder;
-        menuHolder.bindDish((Dish) dataSet.get(position));
+    public void onBindViewHolder(@NonNull MenuHolder holder, int position) {
+        holder.bindDish(dataSet.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        if (dataSet != null) {
+            return dataSet.size();
+        }
+        return 0;
     }
 
     public class MenuHolder extends RecyclerView.ViewHolder {
@@ -69,16 +70,15 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             buttonAddDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Dish dish = (Dish) dataSet.get(getAdapterPosition());
-                    menuFragment.getMainViewModel().addDishToCart(dish);
+                    Dish dish = dataSet.get(getAdapterPosition());
+                    listener.addDish(new DishEntity(0, dish.getID(), 1, dish.getPrice(), dish.getName()));
                 }
             });
 
             buttonRemoveDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Dish dish = (Dish) dataSet.get(getAdapterPosition());
-                    menuFragment.getMainViewModel().removeDishFromCart(dish);
+                    listener.removeDish(dataSet.get(getAdapterPosition()).getID());
                 }
             });
 
@@ -89,5 +89,10 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             textPrice.setText(dish.getPrice() + "");
             textDishCount.setText(dish.getQuantity() + "");
         }
+    }
+
+    public interface CartManager {
+        void addDish(DishEntity dish);
+        void removeDish(String dishID);
     }
 }

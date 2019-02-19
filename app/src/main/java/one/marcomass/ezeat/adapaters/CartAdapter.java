@@ -64,10 +64,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.DishHolder> {
             buttonAddDish = view.findViewById(R.id.button_add_dish);
             buttonRemoveDish = view.findViewById(R.id.button_remove_dish);
 
+            /*
             buttonAddDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mainVM.addDishToCart(dataSet.get(getAdapterPosition()));
+                    mainVM.addDishToCart(dataSet.get(getAdapterPosition()).getID());
                 }
             });
 
@@ -77,6 +78,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.DishHolder> {
                     mainVM.removeDishFromCart(dataSet.get(getAdapterPosition()));
                 }
             });
+            */
         }
 
         public void bindDish(final Dish dish) {

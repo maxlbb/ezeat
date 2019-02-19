@@ -6,20 +6,18 @@ import one.marcomass.ezeat.viewmodels.MainViewModel;
 public class Dish {
 
     private String name;
+    private String image_url;
     private float price;
-    private String category;
-    private int rating;
-    private int ID;
+    private String id;
     private int quantity;
     private LiveData<Integer> liveQuantity;
 
-    public Dish(String name, float price, String category, int rating, int ID) {
+    public Dish(String name, String image_url, float price, String id) {
         this.name = name;
+        this.image_url = image_url;
         this.price = price;
-        this.category = category;
-        this.rating = rating;
-        this.quantity = 0;
-        this.ID = ID;
+        this.id = id;
+        setQuantity(0);
     }
 
     public String getName() {
@@ -30,12 +28,6 @@ public class Dish {
         return price;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public int getRating() { return rating; }
-
     public int getQuantity() {
         return quantity;
     }
@@ -44,14 +36,15 @@ public class Dish {
         this.quantity = quantity;
     }
 
-    public int getID() {
-        return ID;
+    public String getID() {
+        return id;
     }
 
-    public void setLiveQuantity(MainViewModel viewModel) {
+    public LiveData<Integer> setLiveQuantity(MainViewModel viewModel) {
         if (liveQuantity == null) {
             liveQuantity = viewModel.getDishQuantity(getID());
         }
+        return liveQuantity;
     }
 
     public LiveData<Integer> getLiveQuantity() {

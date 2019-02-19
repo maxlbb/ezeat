@@ -2,11 +2,11 @@ package one.marcomass.ezeat.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -18,24 +18,21 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import one.marcomass.ezeat.CartInterface;
+import one.marcomass.ezeat.db.entity.DishEntity;
+import one.marcomass.ezeat.models.Menu;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
 import one.marcomass.ezeat.adapaters.MenuAdapter;
 import one.marcomass.ezeat.models.Dish;
 
-public class MenuFragment extends Fragment implements CartInterface {
+public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
 
     private RecyclerView recyclerMenu;
     private MainViewModel mainVM;
     private MenuAdapter menuAdapter;
     private LinearLayoutManager linearLayoutManager;
     private ContentLoadingProgressBar loadingProgressBar;
-    private MenuFragment thisInt;
-
-    private boolean first = true;
-
     private String restaurantID;
 
     @Override
@@ -58,71 +55,42 @@ public class MenuFragment extends Fragment implements CartInterface {
         recyclerMenu = rootView.findViewById(R.id.recycler_menu);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerMenu.setLayoutManager(linearLayoutManager);
+        ((SimpleItemAnimator) recyclerMenu.getItemAnimator()).setSupportsChangeAnimations(false);
+        menuAdapter = new MenuAdapter(null, this);
+        recyclerMenu.setAdapter(menuAdapter);
 
-        thisInt = this;
+        final MenuFragment lifecycle = this;
 
-        final float dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
-
-        mainVM.getRestaurantMenu().observe(this, new Observer<List<Object>>() {
+        mainVM.getRestaurantMenu(restaurantID).observe(this, new Observer<Menu>() {
             @Override
-            public void onChanged(List<Object> objects) {
-                if (objects != null) {
-                    if (menuAdapter == null) {
-                        menuAdapter = new MenuAdapter(objects, thisInt);
-                        ((SimpleItemAnimator) recyclerMenu.getItemAnimator()).setSupportsChangeAnimations(false);
-                        for (int i = 0; i < objects.size(); i++) {
-                            final int pos = i;
-                            if (objects.get(i) instanceof Dish) {
-                                final Dish dish = (Dish) objects.get(i);
-                                //TODO temp getActivity
-                                dish.getLiveQuantity().observe(getActivity(), new Observer<Integer>() {
-                                    @Override
-                                    public void onChanged(Integer integer) {
-                                        if (integer != null) {
-                                            dish.setQuantity(integer);
-                                            menuAdapter.notifyItemChanged(pos);
-                                        } else {
-                                            dish.setQuantity(0);
-                                            menuAdapter.notifyItemChanged(pos);
-                                        }
-                                    }
-                                });
+            public void onChanged(final Menu menu) {
+                if (menu.getProducts() != null) {
+                    for (int i = 0; i < menu.getProducts().size(); i++) {
+                        final int pos = i;
+                        menu.getProducts().get(pos).setLiveQuantity(mainVM).observe(lifecycle, new Observer<Integer>() {
+                            @Override
+                            public void onChanged(Integer integer) {
+                                menu.getProducts().get(pos).setQuantity(integer == null ? 0 : integer);
+                                menuAdapter.notifyItemChanged(pos);
                             }
-                        }
-                        recyclerMenu.setAdapter(menuAdapter);
-                    } else {
-                        for (int i = 0; i < objects.size(); i++) {
-                            final int pos = i;
-                            if (objects.get(i) instanceof Dish) {
-                                final Dish dish = (Dish) objects.get(i);
-                                //TODO temp getActivity
-                                dish.getLiveQuantity().observe(getActivity(), new Observer<Integer>() {
-                                    @Override
-                                    public void onChanged(Integer integer) {
-                                        dish.setQuantity(integer);
-                                        menuAdapter.notifyItemChanged(pos);
-                                    }
-                                });
-                            }
-                        }
-                        menuAdapter.setDataSet(objects);
+                        });
                     }
-                    loadingProgressBar.setVisibility(View.GONE);
+                    menuAdapter.setDataSet(menu.getProducts());
                     recyclerMenu.setVisibility(View.VISIBLE);
                 }
             }
         });
-
         return rootView;
     }
 
     @Override
-    public void addToCart(Dish dish) {
+    public void addDish(DishEntity dish) {
         mainVM.addDishToCart(dish);
     }
 
-    public MainViewModel getMainViewModel() {
-        return mainVM;
+    @Override
+    public void removeDish(String dishID) {
+        mainVM.removeDishFromCart(dishID);
     }
 }
 

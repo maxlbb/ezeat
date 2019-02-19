@@ -16,6 +16,7 @@ import androidx.lifecycle.Transformations;
 import one.marcomass.ezeat.RestaurantAPI;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Dish;
+import one.marcomass.ezeat.models.Menu;
 import one.marcomass.ezeat.models.Restaurant;
 import one.marcomass.ezeat.repos.CartRepository;
 import retrofit2.Call;
@@ -36,6 +37,7 @@ public class MainViewModel extends AndroidViewModel {
     private LiveData<Integer> cartAllDishCount;
     private LiveData<Float> cartTotal;
 
+    private RestaurantAPI restaurantAPI;
 
     public MainViewModel(Application application) {
         super(application);
@@ -57,6 +59,12 @@ public class MainViewModel extends AndroidViewModel {
 
         bottomSheetOpen = new MutableLiveData<>();
         bottomSheetOpen.setValue(BottomSheetBehavior.STATE_COLLAPSED);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RestaurantAPI.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        restaurantAPI = retrofit.create(RestaurantAPI.class);
     }
 
     //Cart management ------------------------------------------------------------------------------
@@ -65,15 +73,15 @@ public class MainViewModel extends AndroidViewModel {
         return cartRepository.getAllDishes();
     }
 
-    public void addDishToCart(Dish dish) {
-        cartRepository.add(new DishEntity(0, dish.getID(), 1, dish.getPrice(), dish.getName()));
+    public void addDishToCart(DishEntity dish) {
+        cartRepository.add(dish);
     }
 
-    public void removeDishFromCart(Dish dish) {
-        cartRepository.removeDish(dish.getID());
+    public void removeDishFromCart(String dishID) {
+        cartRepository.removeDish(dishID);
     }
 
-    public void removeAllDishFromCart(Dish dish) { cartRepository.removeAllDish(dish.getID()); }
+    public void removeAllDishFromCart(String dishID) { cartRepository.removeAllDish(dishID); }
 
     public void removeAllFromCart() {
         cartRepository.removeAll();
@@ -83,7 +91,7 @@ public class MainViewModel extends AndroidViewModel {
         return cartAllDishCount;
     }
 
-    public LiveData<Integer> getDishQuantity(int dishID) {
+    public LiveData<Integer> getDishQuantity(String dishID) {
         return cartRepository.getDishQuantity(dishID);
     }
 
@@ -94,7 +102,7 @@ public class MainViewModel extends AndroidViewModel {
     //TODO API or something from repo
     public LiveData<Dish> getDishFromID(int dishID) {
         MutableLiveData<Dish> dish = new MutableLiveData<>();
-        dish.setValue(findInMenuMock(dishID));
+        //dish.setValue(findInMenuMock(dishID));
         return dish;
     }
 
@@ -108,13 +116,8 @@ public class MainViewModel extends AndroidViewModel {
         bottomSheetOpen.setValue(state);
     }
 
-    public LiveData<List<Object>> getRestaurantMenu() {
-        if (restaurantMenu == null) {
-            restaurantMenu = new MutableLiveData<>();
-            //TODO chiamata API
-            restaurantMenu.setValue(getMenuMock());
-        }
-        return restaurantMenu;
+    public LiveData<Menu> getRestaurantMenu(String restaurantID) {
+        return loadMenu(restaurantID);
     }
 
     public LiveData<List<Restaurant>> getRestaurantList() {
@@ -126,11 +129,6 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void loadRestaurants() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RestaurantAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RestaurantAPI restaurantAPI = retrofit.create(RestaurantAPI.class);
         Call<List<Restaurant>> call = restaurantAPI.getRestaurants();
 
         call.enqueue(new Callback<List<Restaurant>>() {
@@ -150,22 +148,27 @@ public class MainViewModel extends AndroidViewModel {
         });
     }
 
-    /*public ArrayList<Restaurant> getRestaurantMock() {
-        ArrayList<Restaurant> dataSource = new ArrayList<>();
-        dataSource.add(new Restaurant(0, "Primo", "Indirizzo 1", 8.30f, null));
-        dataSource.add(new Restaurant(1, "Secondo", "Indirizzo 2", 8.30f, null));
-        dataSource.add(new Restaurant(2, "Terzo", "Indirizzo 3", 4.50f, null));
-        dataSource.add(new Restaurant(3, "Quarto", "Indirizzo 4", 1.80f, null));
-        dataSource.add(new Restaurant(4, "Quinto", "Indirizzo 5", 8.30f, null));
-        dataSource.add(new Restaurant(5, "Sesto", "Indirizzo 6", 6.30f, null));
-        dataSource.add(new Restaurant(6, "Settimo", "Indirizzo 7", 8.30f, null));
-        dataSource.add(new Restaurant(7, "Ottavo", "Indirizzo 8", 13.40f, null));
-        dataSource.add(new Restaurant(8, "Nono", "Indirizzo 9", 21.89f, null));
-        return dataSource;
-    }
-    */
+    private LiveData<Menu> loadMenu(String restaurantID) {
+        Call<Menu> call = restaurantAPI.getRestaurantsMenu(restaurantID);
 
-    public List<Object> getMenuMock() {
+        final MutableLiveData<Menu> responseMenu = new MutableLiveData<>();
+
+        call.enqueue(new Callback<Menu>() {
+            @Override
+            public void onResponse(Call<Menu> call, Response<Menu> response) {
+                responseMenu.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Menu> call, Throwable t) {
+
+            }
+        });
+
+        return responseMenu;
+    }
+
+    /*public List<Object> getMenuMock() {
         List<Object> dataSource = new ArrayList<>();
         Dish dish;
         //dataSource.add("Primi");
@@ -231,4 +234,5 @@ public class MainViewModel extends AndroidViewModel {
         }
         return null;
     }
+    */
 }
