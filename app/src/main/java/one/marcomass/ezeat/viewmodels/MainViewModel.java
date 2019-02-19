@@ -3,6 +3,8 @@ package one.marcomass.ezeat.viewmodels;
 import android.app.Application;
 import android.util.Log;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,7 @@ import one.marcomass.ezeat.repos.CartRepository;
 
 
 public class MainViewModel extends AndroidViewModel {
-    private MutableLiveData<Boolean> bottomSheetOpen;
+    private MutableLiveData<Integer> bottomSheetOpen;
 
     private MutableLiveData<List<Object>> restaurantMenu;
     private MutableLiveData<ArrayList<Restaurant>> restaurantList;
@@ -32,6 +34,7 @@ public class MainViewModel extends AndroidViewModel {
     private CartRepository cartRepository;
     private LiveData<List<DishEntity>> allDishes;
     private LiveData<Integer> cartAllDishCount;
+    private LiveData<Float> cartTotal;
 
 
     public MainViewModel(Application application) {
@@ -50,26 +53,30 @@ public class MainViewModel extends AndroidViewModel {
             }
         });
 
+        cartTotal = cartRepository.getTotal();
+
         bottomSheetOpen = new MutableLiveData<>();
-        bottomSheetOpen.setValue(false);
+        bottomSheetOpen.setValue(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     //Cart management ------------------------------------------------------------------------------
 
     public LiveData<List<DishEntity>> getCartAllDishes() {
-        return allDishes;
+        return cartRepository.getAllDishes();
     }
 
     public void addDishToCart(Dish dish) {
-        cartRepository.add(new DishEntity(0, dish.getID(), 1));
-    }
-
-    public void removeAllFromCart() {
-        cartRepository.removeAll();
+        cartRepository.add(new DishEntity(0, dish.getID(), 1, dish.getPrice(), dish.getName()));
     }
 
     public void removeDishFromCart(Dish dish) {
         cartRepository.removeDish(dish.getID());
+    }
+
+    public void removeAllDishFromCart(Dish dish) { cartRepository.removeAllDish(dish.getID()); }
+
+    public void removeAllFromCart() {
+        cartRepository.removeAll();
     }
 
     public LiveData<Integer> getCartAllDishCount() {
@@ -78,6 +85,10 @@ public class MainViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getDishQuantity(int dishID) {
         return cartRepository.getDishQuantity(dishID);
+    }
+
+    public LiveData<Float> getCartTotal() {
+        return cartTotal;
     }
 
     //TODO API or something from repo
@@ -89,12 +100,12 @@ public class MainViewModel extends AndroidViewModel {
 
     //----------------------------------------------------------------------------------------------
 
-    public LiveData<Boolean> getBottomSheetOpen() {
+    public LiveData<Integer> getBottomSheetState() {
         return bottomSheetOpen;
     }
 
-    public void setBottomSheetOpen(boolean open) {
-        bottomSheetOpen.setValue(open);
+    public void setBottomSheetOpen(int state) {
+        bottomSheetOpen.setValue(state);
     }
 
     public LiveData<List<Object>> getRestaurantMenu() {

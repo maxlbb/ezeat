@@ -81,7 +81,9 @@ public class MenuFragment extends Fragment implements CartInterface {
                                         if (integer != null) {
                                             dish.setQuantity(integer);
                                             menuAdapter.notifyItemChanged(pos);
-                                            Log.d("change", "changed");
+                                        } else {
+                                            dish.setQuantity(0);
+                                            menuAdapter.notifyItemChanged(pos);
                                         }
                                     }
                                 });

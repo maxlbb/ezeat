@@ -17,10 +17,18 @@ public class DishEntity {
     @ColumnInfo(name = "quantity")
     private int quantity;
 
-    public DishEntity(int id, int dishID, int quantity) {
+    @ColumnInfo(name = "price")
+    private float price;
+
+    @ColumnInfo(name = "name")
+    private String name;
+
+    public DishEntity(int id, int dishID, int quantity, float price, String name) {
         this.id = id;
         this.dishID = dishID;
         this.quantity = quantity;
+        this.price = price;
+        this.name = name;
     }
 
     public int getId() {
@@ -33,5 +41,13 @@ public class DishEntity {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public String getName() {
+        return name;
     }
 }

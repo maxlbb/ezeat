@@ -29,6 +29,10 @@ public class CartRepository {
         return cartDAO.getAllDishes();
     }
 
+    public LiveData<Float> getTotal() {
+        return cartDAO.getTotal();
+    }
+
     public void add(DishEntity dish) {
         new insertAsyncTask(cartDAO).execute(dish);
     }
@@ -40,6 +44,8 @@ public class CartRepository {
     public void removeDish(int dishID) {
         new removeDishAsyncTask(cartDAO).execute(dishID);
     }
+
+    public void removeAllDish(int dishID) { new removeAllDishAsyncTask(cartDAO).execute(dishID); }
 
     private static class insertAsyncTask extends AsyncTask<DishEntity, Void, Void> {
 
@@ -54,9 +60,7 @@ public class CartRepository {
             DishEntity dish = mAsyncTaskDao.getDishByID(params[0].getDishID());
             if (dish != null) {
                 mAsyncTaskDao.addDish(dish.getDishID());
-                Log.d("add_room", "adding");
             } else {
-                Log.d("add_room", "inserting");
                 mAsyncTaskDao.insertDish(params[0]);
             }
             return null;
@@ -88,7 +92,30 @@ public class CartRepository {
 
         @Override
         protected Void doInBackground(final Integer... params) {
-            mAsyncTaskDao.removeDish(params[0]);
+            DishEntity dish = mAsyncTaskDao.getDishByID(params[0]);
+            if (dish != null) {
+                if (dish.getQuantity() > 1) {
+                    mAsyncTaskDao.removeDish(params[0]);
+                } else {
+                    Log.d("data", "removing " + params[0]);
+                    mAsyncTaskDao.removeAllDish(params[0]);
+                }
+            }
+            return null;
+        }
+    }
+
+    private static class removeAllDishAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        private CartDAO mAsyncTaskDao;
+
+        removeAllDishAsyncTask(CartDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Integer... params) {
+            mAsyncTaskDao.removeAllDish(params[0]);
             return null;
         }
     }
