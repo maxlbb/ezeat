@@ -24,7 +24,18 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="16dp"
-        android:text="Riepilogo ordine"
+        android:text="totale"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/text_checkout_total_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/text_checkout_riepilogo"
+        android:layout_toLeftOf="@id/button_checkout_expand"
+        android:text="0 €"
+        android:layout_marginRight="16dp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
         android:textSize="16dp" />
 
@@ -33,7 +44,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignBottom="@id/text_checkout_riepilogo"
-        android:layout_marginBottom="-8dp"
+        android:layout_marginBottom="-6dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="32dp"
         android:background="@android:color/transparent"

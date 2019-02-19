@@ -13,11 +13,14 @@ import android.widget.RelativeLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
@@ -39,24 +42,23 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         RelativeLayout bottomSheet = findViewById(R.id.fragment_checkout);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
-        mainVM.getBottomSheetOpen().observe(this, new Observer<Boolean>() {
+        mainVM.getBottomSheetState().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(Boolean open) {
-                if (open) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
+            public void onChanged(Integer state) {
+                Log.d("bottom", "changed " + state);
+                bottomSheetBehavior.setState(state);
             }
         });
 
-        //TODO bad way to disable dragging
+        //TODO bad way to disable dragging - review
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (i == BottomSheetBehavior.STATE_DRAGGING && mainVM.getBottomSheetOpen().getValue()) {
+                if (i == BottomSheetBehavior.STATE_DRAGGING
+                        && mainVM.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else if (i == BottomSheetBehavior.STATE_DRAGGING && !mainVM.getBottomSheetOpen().getValue()) {
+                } else if (i == BottomSheetBehavior.STATE_DRAGGING
+                        && mainVM.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_COLLAPSED) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
@@ -71,6 +73,15 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, restaurantFragment);
         fragmentTransaction.commit();
+
+        /*mainVM.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
+            @Override
+            public void onChanged(List<DishEntity> dishEntities) {
+                if (dishEntities != null && dishEntities.size() != 0) {
+                    Log.d("dataCart", dishEntities.get(0).getName() + " " + dishEntities.get(0).getQuantity());
+                }
+            }
+        });*/
     }
 
     @Override
