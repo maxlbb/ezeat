@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
     public void selectRestaurant(Restaurant restaurant) {
         MenuFragment menuFragment = new MenuFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(Util.RESTAURANT_ID, restaurant.getID());
+        bundle.putString(Util.RESTAURANT_ID, restaurant.getID());
         menuFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, menuFragment);

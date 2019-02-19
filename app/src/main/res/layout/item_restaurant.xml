@@ -1,81 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="89dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white" >
+    android:background="@android:color/white">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/divider_custom"/>
+        android:background="@drawable/divider_custom" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_container_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="17dp"
         android:elevation="0dp"
-        app:cardElevation="0dp"
-        android:id="@+id/card_container_image">
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp">
 
         <ImageView
             android:id="@+id/image_restaurant_logo"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background" />
 
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/text_restaurant_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        android:layout_toRightOf="@id/card_container_image"
-        android:layout_marginLeft="16dp"
         android:layout_alignTop="@id/card_container_image"
-        tools:text="Restaurant name" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@id/card_container_image"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        tools:text="Restaurant nameeeeeeeeeeeeeeeeeeeeeeee" />
 
     <ImageView
         android:id="@+id/icon_place"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:padding="2dp"
-        android:layout_alignLeft="@id/text_restaurant_name"
         android:layout_below="@id/text_restaurant_name"
+        android:layout_alignLeft="@id/text_restaurant_name"
+        android:padding="2dp"
         android:src="@drawable/ic_place_black" />
 
     <TextView
         android:id="@+id/text_restaurant_address"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/icon_place"
         android:layout_below="@id/text_restaurant_name"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@id/icon_place"
+        android:ellipsize="marquee"
+        android:singleLine="true"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-        tools:text="Address" />
+        tools:text="Addressssssssssssssssssssssssssssssssssssssssss" />
 
     <RatingBar
         android:id="@+id/rating_restaurant"
         style="?attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/text_restaurant_name"
-        android:layout_below="@id/text_restaurant_address"/>
-
-    <ImageView
-        android:id="@+id/icon_dollar"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:padding="2dp"
-        android:layout_toLeftOf="@id/text_restaurant_min_price"
-        android:layout_alignBottom="@id/text_restaurant_min_price"
-        android:src="@drawable/ic_attach_money_black" />
+        android:layout_below="@id/text_restaurant_address"
+        android:layout_alignLeft="@id/text_restaurant_name" />
 
     <TextView
         android:id="@+id/text_restaurant_min_price"
@@ -83,9 +81,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        tools:text="8.30 min" />
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        tools:text="€ 8.30 min" />
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package one.marcomass.ezeat.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,7 +38,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
     private GridLayoutManager gridLayoutManager;
     private MainViewModel mainVM;
 
-    private List<Restaurant> restaurants;
+    private List<Restaurant> restaurantsList = new ArrayList<>();
 
     private RestaurantSelector restListener;
 
@@ -64,14 +67,25 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
         recyclerRestaurants = rootView.findViewById(R.id.recycler_main_restaurants);
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
-        restaurants = mainVM.getRestaurantMock();
-        adapterRestaurants = new RestaurantsAdapter(restaurants, restListener);
-        restaurantsGridAdapter = new RestaurantsGridAdapter(restaurants, restListener);
+        adapterRestaurants = new RestaurantsAdapter(restaurantsList, restListener);
+        restaurantsGridAdapter = new RestaurantsGridAdapter(restaurantsList, restListener);
         recyclerRestaurants.setLayoutManager(gridLayoutManager);
+        recyclerRestaurants.setAdapter(adapterRestaurants);
         switchLayout(!gridMenu);
 
         textHeader = rootView.findViewById(R.id.text_restaurant_header);
-        textHeader.setText("Tutti i ristoranti (" + restaurants.size() + ")");
+
+        mainVM.getRestaurantList().observe(this, new Observer<List<Restaurant>>() {
+            @Override
+            public void onChanged(List<Restaurant> restaurants) {
+                if (restaurantsList.size() == 0) {
+                    restaurantsList.addAll(restaurants);
+                    adapterRestaurants.notifyDataSetChanged();
+                    restaurantsGridAdapter.notifyDataSetChanged();
+                }
+                textHeader.setText("Tutti i ristoranti (" + restaurantsList.size() + ")");
+            }
+        });
 
         return rootView;
     }

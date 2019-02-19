@@ -7,29 +7,29 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
+import one.marcomass.ezeat.RestaurantAPI;
 import one.marcomass.ezeat.db.entity.DishEntity;
-import one.marcomass.ezeat.models.Cart;
 import one.marcomass.ezeat.models.Dish;
 import one.marcomass.ezeat.models.Restaurant;
-import one.marcomass.ezeat.models.RestaurantMenu;
 import one.marcomass.ezeat.repos.CartRepository;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> bottomSheetOpen;
 
     private MutableLiveData<List<Object>> restaurantMenu;
-    private MutableLiveData<ArrayList<Restaurant>> restaurantList;
+    private MutableLiveData<List<Restaurant>> restaurantList;
 
     private CartRepository cartRepository;
     private LiveData<List<DishEntity>> allDishes;
@@ -117,16 +117,40 @@ public class MainViewModel extends AndroidViewModel {
         return restaurantMenu;
     }
 
-    public LiveData<ArrayList<Restaurant>> getRestaurantList() {
+    public LiveData<List<Restaurant>> getRestaurantList() {
         if (restaurantList == null) {
             restaurantList = new MutableLiveData<>();
-            //TODO chiamata API
-            restaurantList.setValue(getRestaurantMock());
+            loadRestaurants();
         }
         return restaurantList;
     }
 
-    public ArrayList<Restaurant> getRestaurantMock() {
+    private void loadRestaurants() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RestaurantAPI.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RestaurantAPI restaurantAPI = retrofit.create(RestaurantAPI.class);
+        Call<List<Restaurant>> call = restaurantAPI.getRestaurants();
+
+        call.enqueue(new Callback<List<Restaurant>>() {
+            @Override
+            public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
+                Log.d("Retrofit", "Response " + response.code());
+                Log.d("Retrofit", "Response " + response.body().get(0).getName());
+                restaurantList.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Restaurant>> call, Throwable t) {
+                Log.e("Retrofit", "Restaurant request fail");
+                Log.e("Retrofit", t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+
+    /*public ArrayList<Restaurant> getRestaurantMock() {
         ArrayList<Restaurant> dataSource = new ArrayList<>();
         dataSource.add(new Restaurant(0, "Primo", "Indirizzo 1", 8.30f, null));
         dataSource.add(new Restaurant(1, "Secondo", "Indirizzo 2", 8.30f, null));
@@ -139,6 +163,7 @@ public class MainViewModel extends AndroidViewModel {
         dataSource.add(new Restaurant(8, "Nono", "Indirizzo 9", 21.89f, null));
         return dataSource;
     }
+    */
 
     public List<Object> getMenuMock() {
         List<Object> dataSource = new ArrayList<>();

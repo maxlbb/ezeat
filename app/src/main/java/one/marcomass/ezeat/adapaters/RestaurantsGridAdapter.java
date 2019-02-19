@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -45,6 +47,7 @@ public class RestaurantsGridAdapter extends RecyclerView.Adapter<RestaurantsGrid
 
         public void bindData(Restaurant restaurant) {
             textName.setText(restaurant.getName());
+            Picasso.get().load(restaurant.getImageURL()).into(imageLogo);
         }
     }
 

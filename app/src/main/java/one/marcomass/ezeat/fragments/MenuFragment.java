@@ -36,7 +36,7 @@ public class MenuFragment extends Fragment implements CartInterface {
 
     private boolean first = true;
 
-    private int restaurantID;
+    private String restaurantID;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class MenuFragment extends Fragment implements CartInterface {
         mainVM = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
 
         if (getArguments() != null) {
-            restaurantID = getArguments().getInt(Util.RESTAURANT_ID, 0);
+            restaurantID = getArguments().getString(Util.RESTAURANT_ID, "noID");
         }
 
     }
