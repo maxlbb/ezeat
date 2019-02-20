@@ -1,6 +1,9 @@
 package one.marcomass.ezeat.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -31,6 +35,8 @@ import one.marcomass.ezeat.models.Restaurant;
 public class MainActivity extends AppCompatActivity implements RestaurantFragment.RestaurantSelector {
 
     private MainViewModel mainVM;
+    private SharedPreferences sharedPreferences;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         setContentView(R.layout.activity_main);
 
         mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
+        sharedPreferences = getSharedPreferences(Util.PREFERENCES, Context.MODE_PRIVATE);
+        token = sharedPreferences.getString(Util.TOKEN, null);
+        updateLogin();
 
         RelativeLayout bottomSheet = findViewById(R.id.fragment_checkout);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -45,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         mainVM.getBottomSheetState().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer state) {
-                Log.d("bottom", "changed " + state);
                 bottomSheetBehavior.setState(state);
             }
         });
@@ -62,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
-
             @Override
             public void onSlide(@NonNull View view, float v) {
 
@@ -73,15 +80,6 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, restaurantFragment);
         fragmentTransaction.commit();
-
-        /*mainVM.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
-            @Override
-            public void onChanged(List<DishEntity> dishEntities) {
-                if (dishEntities != null && dishEntities.size() != 0) {
-                    Log.d("dataCart", dishEntities.get(0).getName() + " " + dishEntities.get(0).getQuantity());
-                }
-            }
-        });*/
     }
 
     @Override
@@ -92,14 +90,45 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (token != null) {
+            menu.findItem(R.id.action_account).setVisible(true);
+            menu.findItem(R.id.action_login).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_account).setVisible(false);
+            menu.findItem(R.id.action_login).setVisible(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_account:
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
+                Intent intentLogout = new Intent(this, AccountActivity.class);
+                startActivityForResult(intentLogout, Util.REQUEST_LOGOUT);
+                break;
+            case R.id.action_login:
+                Intent intentLogin = new Intent(this, LoginActivity.class);
+                startActivityForResult(intentLogin, Util.REQUEST_LOGIN);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case Util.REQUEST_LOGIN:
+                if (resultCode == Activity.RESULT_OK) {
+                    updateLogin();
+                }
+                break;
+            case Util.REQUEST_LOGOUT:
+                if (resultCode == Activity.RESULT_OK) {
+                    updateLogin();
+                }
+        }
     }
 
     //TODO change params
@@ -113,5 +142,13 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         fragmentTransaction.replace(R.id.fragment_container, menuFragment);
         fragmentTransaction.addToBackStack("fragment_menu");
         fragmentTransaction.commit();
+    }
+
+    private void updateLogin() {
+        token = sharedPreferences.getString(Util.TOKEN, null);
+        invalidateOptionsMenu();
+        if (token != null) {
+            mainVM.setIsLogged(true);
+        }
     }
 }

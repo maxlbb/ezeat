@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.arch.core.util.Function;
@@ -13,11 +12,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-import one.marcomass.ezeat.RestaurantAPI;
+import one.marcomass.ezeat.BackendAPI;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Dish;
 import one.marcomass.ezeat.models.Menu;
 import one.marcomass.ezeat.models.Restaurant;
+import one.marcomass.ezeat.models.SignResponse;
 import one.marcomass.ezeat.repos.CartRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,22 +29,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> bottomSheetOpen;
 
-    private MutableLiveData<List<Object>> restaurantMenu;
     private MutableLiveData<List<Restaurant>> restaurantList;
 
     private CartRepository cartRepository;
-    private LiveData<List<DishEntity>> allDishes;
     private LiveData<Integer> cartAllDishCount;
     private LiveData<Float> cartTotal;
 
-    private RestaurantAPI restaurantAPI;
+    private BackendAPI backendAPI;
+
+    private MutableLiveData<Boolean> isLogged;
 
     public MainViewModel(Application application) {
         super(application);
         cartRepository = new CartRepository(application);
-        allDishes = cartRepository.getAllDishes();
 
-        cartAllDishCount = Transformations.map(allDishes, new Function<List<DishEntity>, Integer>() {
+        cartAllDishCount = Transformations.map(cartRepository.getAllDishes(), new Function<List<DishEntity>, Integer>() {
             @Override
             public Integer apply(List<DishEntity> input) {
                 int totalQuantity = 0;
@@ -61,10 +60,12 @@ public class MainViewModel extends AndroidViewModel {
         bottomSheetOpen.setValue(BottomSheetBehavior.STATE_COLLAPSED);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RestaurantAPI.BASE_URL)
+                .baseUrl(BackendAPI.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        restaurantAPI = retrofit.create(RestaurantAPI.class);
+        backendAPI = retrofit.create(BackendAPI.class);
+
+        isLogged = new MutableLiveData<>();
     }
 
     //Cart management ------------------------------------------------------------------------------
@@ -129,7 +130,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void loadRestaurants() {
-        Call<List<Restaurant>> call = restaurantAPI.getRestaurants();
+        Call<List<Restaurant>> call = backendAPI.getRestaurants();
 
         call.enqueue(new Callback<List<Restaurant>>() {
             @Override
@@ -149,7 +150,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private LiveData<Menu> loadMenu(String restaurantID) {
-        Call<Menu> call = restaurantAPI.getRestaurantsMenu(restaurantID);
+        Call<Menu> call = backendAPI.getRestaurantsMenu(restaurantID);
 
         final MutableLiveData<Menu> responseMenu = new MutableLiveData<>();
 
@@ -168,71 +169,51 @@ public class MainViewModel extends AndroidViewModel {
         return responseMenu;
     }
 
-    /*public List<Object> getMenuMock() {
-        List<Object> dataSource = new ArrayList<>();
-        Dish dish;
-        //dataSource.add("Primi");
-        dish = new Dish("Pasta", 4.99f, "Primo", 3, 0);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Lasagne", 4.99f, "Primo", 4, 1);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Gnocchi", 4.99f, "Primo", 5, 2);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        //dataSource.add("Secondi");
-        dish = new Dish("Coscia di pollo", 4.99f, "Secondo", 4, 3);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Uovo sbattuto", 4.99f, "Secondo", 4, 4);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Vitello tonnato", 4.99f, "Secondo", 5, 5);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        //dataSource.add("Bevande");
-        dish = new Dish("Acqua", 4.99f, "Bevanda", 2, 6);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Cocacola", 4.99f, "Bevanda", 5, 7);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Fanta", 4.99f, "Bevanda", 5, 8);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Birra", 4.99f, "Bevanda", 2, 9);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        dish = new Dish("Vino", 4.99f, "Bevanda", 5, 10);
-        dish.setLiveQuantity(this);
-        dataSource.add(dish);
-        return dataSource;
-    }
+    public LiveData<SignResponse> register(String username, String password, String email) {
+        Call<SignResponse> call = backendAPI.register(username, password, email);
 
-    public Dish findInMenuMock(int dishID) {
-        ArrayList<Object> dataSource = new ArrayList<>();
-        dataSource.add("Primi");
-        dataSource.add(new Dish("Pasta", 4.99f, "Primo", 3, 0));
-        dataSource.add(new Dish("Lasagne", 4.99f, "Primo", 4, 1));
-        dataSource.add(new Dish("Gnocchi", 4.99f, "Primo", 5, 2));
-        dataSource.add("Secondi");
-        dataSource.add(new Dish("Coscia di pollo", 4.99f, "Secondo", 4, 3));
-        dataSource.add(new Dish("Uovo sbattuto", 4.99f, "Secondo", 4, 4));
-        dataSource.add(new Dish("Vitello tonnato", 4.99f, "Secondo", 5, 5));
-        dataSource.add("Bevande");
-        dataSource.add(new Dish("Acqua", 4.99f, "Bevanda", 2, 6));
-        dataSource.add(new Dish("Cocacola", 4.99f, "Bevanda", 5, 7));
-        dataSource.add(new Dish("Fanta", 4.99f, "Bevanda", 5, 8));
-        dataSource.add(new Dish("Birra", 4.99f, "Bevanda", 2, 9));
-        dataSource.add(new Dish("Vino", 4.99f, "Bevanda", 5, 10));
+        final MutableLiveData<SignResponse> signResponse = new MutableLiveData<>();
 
-        for (Object dish : dataSource) {
-            if (dish instanceof Dish && ((Dish)dish).getID() == dishID) {
-                return (Dish) dish;
+        call.enqueue(new Callback<SignResponse>() {
+            @Override
+            public void onResponse(Call<SignResponse> call, Response<SignResponse> response) {
+                signResponse.setValue(response.body());
             }
-        }
-        return null;
+
+            @Override
+            public void onFailure(Call<SignResponse> call, Throwable t) {
+
+            }
+        });
+
+        return signResponse;
     }
-    */
+
+    public LiveData<SignResponse> login(String identifier, String password) {
+        Call<SignResponse> call = backendAPI.login(identifier, password);
+
+        final MutableLiveData<SignResponse> signResponse = new MutableLiveData<>();
+
+        call.enqueue(new Callback<SignResponse>() {
+            @Override
+            public void onResponse(Call<SignResponse> call, Response<SignResponse> response) {
+                signResponse.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<SignResponse> call, Throwable t) {
+
+            }
+        });
+
+        return signResponse;
+    }
+
+    public LiveData<Boolean> getIsLogged() {
+        return isLogged;
+    }
+
+    public void setIsLogged(Boolean isLogged) {
+        this.isLogged.setValue(isLogged);
+    }
 }
