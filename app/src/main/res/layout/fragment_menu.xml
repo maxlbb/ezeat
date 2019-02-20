@@ -28,6 +28,8 @@
         android:layout_below="@id/image_restaurant_logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="56dp"
+        android:clipToPadding="false"
         android:visibility="gone" />
 
 </RelativeLayout>

@@ -35,8 +35,6 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
     private TextView textTitle;
     private TextView textTotal;
 
-    private boolean open = false;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +43,7 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_checkout, container, false);
 
         textTotal = view.findViewById(R.id.text_checkout_total);
@@ -56,20 +54,30 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
         buttonExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (open) {
-                    open = false;
-                    mainViewModel.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
-                    buttonExpand.setImageResource(getResources()
-                            .getIdentifier("@drawable/ic_expand_up", null, getActivity().getPackageName()));
-                    textUpTotal.setVisibility(View.VISIBLE);
-                    textTitle.setText("Totale");
-                } else {
-                    open = true;
+                if (mainViewModel.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_COLLAPSED) {
                     mainViewModel.setBottomSheetOpen(BottomSheetBehavior.STATE_EXPANDED);
-                    buttonExpand.setImageResource(getResources()
-                            .getIdentifier("@drawable/ic_expand_down", null, getActivity().getPackageName()));
-                    textUpTotal.setVisibility(View.GONE);
-                    textTitle.setText("Carrello");
+                } else {
+                    mainViewModel.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+
+        mainViewModel.getBottomSheetState().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer state) {
+                switch (state) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        buttonExpand.setImageResource(getResources()
+                                .getIdentifier("@drawable/ic_expand_up", null, getActivity().getPackageName()));
+                        textUpTotal.setVisibility(View.VISIBLE);
+                        textTitle.setText("Totale");
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        buttonExpand.setImageResource(getResources()
+                                .getIdentifier("@drawable/ic_expand_down", null, getActivity().getPackageName()));
+                        textUpTotal.setVisibility(View.GONE);
+                        textTitle.setText("Carrello");
+                        break;
                 }
             }
         });

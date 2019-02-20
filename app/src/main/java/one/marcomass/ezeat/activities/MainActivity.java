@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import one.marcomass.ezeat.adapaters.MenuAdapter;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         token = sharedPreferences.getString(Util.TOKEN, null);
         updateLogin();
 
-        RelativeLayout bottomSheet = findViewById(R.id.fragment_checkout);
+        final RelativeLayout bottomSheet = findViewById(R.id.fragment_checkout);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         mainVM.getBottomSheetState().observe(this, new Observer<Integer>() {
@@ -58,14 +59,23 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             }
         });
 
-        //TODO bad way to disable dragging - review
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                if (i == BottomSheetBehavior.STATE_DRAGGING
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_EXPANDED);
+                        break;
+                }
+
+                //TODO bad try to disable dragging
+                if (state == BottomSheetBehavior.STATE_DRAGGING
                         && mainVM.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else if (i == BottomSheetBehavior.STATE_DRAGGING
+                } else if (state == BottomSheetBehavior.STATE_DRAGGING
                         && mainVM.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_COLLAPSED) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }

@@ -57,7 +57,7 @@ public class MainViewModel extends AndroidViewModel {
         cartTotal = cartRepository.getTotal();
 
         bottomSheetOpen = new MutableLiveData<>();
-        bottomSheetOpen.setValue(BottomSheetBehavior.STATE_COLLAPSED);
+        bottomSheetOpen.setValue(BottomSheetBehavior.STATE_HIDDEN);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BackendAPI.BASE_URL)

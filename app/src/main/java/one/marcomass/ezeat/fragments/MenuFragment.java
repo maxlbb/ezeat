@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,7 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainVM = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
 
         if (getArguments() != null) {
             restaurantID = getArguments().getString(Util.RESTAURANT_ID, "noID");
@@ -86,6 +89,18 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_HIDDEN);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
+        super.onResume();
     }
 
     @Override
