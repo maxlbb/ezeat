@@ -96,7 +96,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
     }
 
     public interface RestaurantSelector {
-        void selectRestaurant(Restaurant restaurant);
+        void selectRestaurant(String restaurantID);
     }
 
     @Override
