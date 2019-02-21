@@ -28,8 +28,7 @@ public interface CartDAO {
     @Query("DELETE FROM cart_table WHERE dish_id = :dishID")
     void removeAllDish(String dishID);
 
-    //TODO find better solution
-    @Query("UPDATE cart_table SET quantity = 0")
+    @Query("DELETE FROM cart_table")
     void removeAll();
 
     @Query("SELECT * FROM cart_table")
