@@ -5,6 +5,7 @@ import android.util.Patterns;
 public class Util {
 
     public final static String RESTAURANT_ID = "one.marcomass.ezeat.restaurant_id";
+    public final static String RESTAURANT_NAME = "one.marcomass.ezeat.restaurant_name";
     public final static int REQUEST_LOGIN = 7001;
     public final static int REQUEST_LOGOUT = 7002;
     public final static int LOGIN_SUCCESSFULL = 2001;

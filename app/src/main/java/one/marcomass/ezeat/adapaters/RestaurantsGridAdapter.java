@@ -39,7 +39,7 @@ public class RestaurantsGridAdapter extends RecyclerView.Adapter<RestaurantsGrid
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    restListener.selectRestaurant(restaurantList.get(getAdapterPosition()).getID());
+                    restListener.selectRestaurant(restaurantList.get(getAdapterPosition()));
                 }
             });
 

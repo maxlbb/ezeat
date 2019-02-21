@@ -46,7 +46,7 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    restListener.selectRestaurant(dataSet.get(getAdapterPosition()).getID());
+                    restListener.selectRestaurant(dataSet.get(getAdapterPosition()));
                 }
             });
 

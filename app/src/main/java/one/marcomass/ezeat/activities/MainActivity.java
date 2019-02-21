@@ -161,20 +161,21 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
 
     //TODO change params
     @Override
-    public void selectRestaurant(final String restaurantID) {
+    public void selectRestaurant(final Restaurant restaurant) {
         //TODO temp - check order restaurant id
         //TODO find a better way to check if order exist
         String oldRestaurantID = sharedPreferences.getString(Util.RESTAURANT_ID, null);
-        if (restaurantID.equals(oldRestaurantID) || oldRestaurantID == null) {
-            openRestaurantFragment(restaurantID);
+        if (restaurant.getID().equals(oldRestaurantID) || oldRestaurantID == null) {
+            openRestaurantFragment(restaurant);
         } else {
+            String restaurantName = sharedPreferences.getString(Util.RESTAURANT_NAME, "no name");
             new AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
-                    .setTitle("Hai già un ordine")
-                    .setMessage("Puoi ordinare da un unico ristorante contemporaneamente. \nVuoi eliminare l'ordine precedente?")
+                    .setTitle("Stai ordinando da " + restaurantName)
+                    .setMessage("Puoi ordinare da un unico ristorante contemporaneamente. \nVuoi eliminare l'ordine?")
                     .setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            openRestaurantFragment(restaurantID);
+                            openRestaurantFragment(restaurant);
                             mainVM.removeAllFromCart();
                         }
                     })
@@ -191,11 +192,14 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         }
     }
 
-    private void openRestaurantFragment(String restaurantID) {
-        sharedPreferences.edit().putString(Util.RESTAURANT_ID, restaurantID).apply();
+    private void openRestaurantFragment(Restaurant restaurant) {
+        sharedPreferences.edit()
+                .putString(Util.RESTAURANT_ID, restaurant.getID())
+                .putString(Util.RESTAURANT_NAME, restaurant.getName())
+                .apply();
         MenuFragment menuFragment = new MenuFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Util.RESTAURANT_ID, restaurantID);
+        bundle.putString(Util.RESTAURANT_ID, restaurant.getID());
         menuFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, menuFragment);
