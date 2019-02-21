@@ -1,10 +1,10 @@
 package one.marcomass.ezeat.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,6 +14,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -22,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.adapaters.CheckoutAdapter;
 import one.marcomass.ezeat.db.entity.DishEntity;
-import one.marcomass.ezeat.models.Dish;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 
 public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartManager {
@@ -30,15 +30,22 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
     private RecyclerView recyclerCheckout;
     private CheckoutAdapter checkoutAdapter;
     private MainViewModel mainViewModel;
+    private Toolbar toolbar;
     private ImageButton buttonExpand;
     private TextView textUpTotal;
     private TextView textTitle;
     private TextView textTotal;
+    private TextView textMinOrder;
+    private Button buttonOrder;
+
+    private float actionBarElevetion = 0;
+    private float actionBarHeight = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+
     }
 
     @Nullable
@@ -48,16 +55,18 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
 
         textTotal = view.findViewById(R.id.text_checkout_total);
         textUpTotal = view.findViewById(R.id.text_checkout_total_up);
-        textTitle = view.findViewById(R.id.text_checkout_riepilogo);
+        textTitle = view.findViewById(R.id.text_checkout_title);
+        textMinOrder = view.findViewById(R.id.text_checkout_min_order);
+        buttonOrder = view.findViewById(R.id.button_checkout_order);
 
         buttonExpand = view.findViewById(R.id.button_checkout_expand);
         buttonExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mainViewModel.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    mainViewModel.setBottomSheetOpen(BottomSheetBehavior.STATE_EXPANDED);
+                    mainViewModel.setBottomSheetState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
-                    mainViewModel.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
+                    mainViewModel.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
         });
@@ -101,14 +110,27 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
         });
         mainViewModel.getCartTotal().observe(this, new Observer<Float>() {
             @Override
-            public void onChanged(Float aFloat) {
-                if (aFloat != null) {
-                    textTotal.setText(String.format("%.2f", aFloat) + " €");
-                    textUpTotal.setText(String.format("%.2f", aFloat) + " €");
+            public void onChanged(Float total) {
+                if (total != null) {
+                    textTotal.setText(String.format("%.2f", total) + " €");
+                    textUpTotal.setText(String.format("%.2f", total) + " €");
+                    if (total >= mainViewModel.getMinOrder().getValue()) {
+                        buttonOrder.setEnabled(true);
+                    } else {
+                        buttonOrder.setEnabled(false);
+                    }
                 } else {
-                    textTotal.setText("0 €");
-                    textUpTotal.setText("0 €");
+                    textTotal.setText("0.00 €");
+                    textUpTotal.setText("0.00 €");
+                    buttonOrder.setEnabled(false);
                 }
+            }
+        });
+
+        mainViewModel.getMinOrder().observe(this, new Observer<Float>() {
+            @Override
+            public void onChanged(Float minOrder) {
+                textMinOrder.setText("Ordine minimo: " + String.format("%.2f", minOrder) + "€");
             }
         });
 

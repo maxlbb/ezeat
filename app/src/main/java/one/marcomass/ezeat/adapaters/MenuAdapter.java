@@ -91,7 +91,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
 
         public void bindDish(final Dish dish) {
             textName.setText(dish.getName());
-            textPrice.setText(dish.getPrice() + "");
+            textPrice.setText(String.format("%.2f", dish.getPrice()) + "");
             textDishCount.setText(dish.getQuantity() + "");
             Picasso.get().load(dish.getImageUrl()).into(imageDish);
         }

@@ -71,7 +71,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
 
         public void bindData(DishEntity dish) {
             this.textName.setText(dish.getName());
-            this.textPrice.setText(String.valueOf(dish.getPrice()));
+            this.textPrice.setText(String.format("%.2f", dish.getPrice()));
             this.textDishQuantity.setText(String.valueOf(dish.getQuantity()));
         }
     }
