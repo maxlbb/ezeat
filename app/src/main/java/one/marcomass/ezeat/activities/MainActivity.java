@@ -2,6 +2,7 @@ package one.marcomass.ezeat.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             public void onChanged(Integer state) {
                 if (state == BottomSheetBehavior.STATE_COLLAPSED) {
                     linearCheckout.animate().translationY(-linearCheckout.getHeight()).setDuration(200).start();
-                } else if (state == BottomSheetBehavior.STATE_EXPANDED){
+                } else if (state == BottomSheetBehavior.STATE_EXPANDED) {
                     linearCheckout.animate().translationY(linearCheckout.getHeight()).setDuration(200).start();
                 }
                 bottomSheetBehavior.setState(state);
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
+
             @Override
             public void onSlide(@NonNull View view, float v) {
 
@@ -158,15 +161,26 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
 
     //TODO change params
     @Override
-    public void selectRestaurant(String restaurantID) {
-        MenuFragment menuFragment = new MenuFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(Util.RESTAURANT_ID, restaurantID);
-        menuFragment.setArguments(bundle);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, menuFragment);
-        fragmentTransaction.addToBackStack("fragment_menu");
-        fragmentTransaction.commit();
+    public void selectRestaurant(final String restaurantID) {
+        //TODO temp - check order restaurant id
+        //TODO find a better way to check if order exist
+        String oldRestaurantID = sharedPreferences.getString(Util.RESTAURANT_ID, null);
+        if (restaurantID.equals(oldRestaurantID) || oldRestaurantID == null) {
+            openRestaurantFragment(restaurantID);
+        } else {
+            new AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+                    .setTitle("Hai già un ordine")
+                    .setMessage("Puoi ordinare da un unico ristorante contemporaneamente. \nVuoi eliminare l'ordine precedente?")
+                    .setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            openRestaurantFragment(restaurantID);
+                            mainVM.removeAllFromCart();
+                        }
+                    })
+                    .setNegativeButton("Annulla", null)
+                    .show();
+        }
     }
 
     private void updateLogin() {
@@ -175,5 +189,17 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         if (token != null) {
             mainVM.setIsLogged(true);
         }
+    }
+
+    private void openRestaurantFragment(String restaurantID) {
+        sharedPreferences.edit().putString(Util.RESTAURANT_ID, restaurantID).apply();
+        MenuFragment menuFragment = new MenuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(Util.RESTAURANT_ID, restaurantID);
+        menuFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, menuFragment);
+        fragmentTransaction.addToBackStack("fragment_menu");
+        fragmentTransaction.commit();
     }
 }
