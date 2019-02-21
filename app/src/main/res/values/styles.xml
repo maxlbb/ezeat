@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -21,6 +21,11 @@
 
         <item name="colorButtonNormal">@color/colorPrimaryDark</item>
 
+    </style>
+
+    <style name="Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="actionBarItemBackground">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

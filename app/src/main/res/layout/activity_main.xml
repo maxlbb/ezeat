@@ -1,32 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@android:color/white"
+    android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <View
-        android:id="@+id/view_background"
-        android:layout_width="128dp"
-        android:layout_height="match_parent"
-        android:background="@color/redBack"
-        android:visibility="gone"/>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Toolbar"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp" />
 
-    <fragment
+    <!-- TODO find a better way -->
+    <LinearLayout
+        android:id="@+id/linear_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="-80dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageButton
+                android:id="@+id/button_checkout_close"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="12dp"
+                android:background="@android:color/transparent"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close" />
+
+            <TextView
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:text="Riepilogo"
+                android:textColor="@android:color/white" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/fragment_checkout"
-        android:name="one.marcomass.ezeat.fragments.CheckoutFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="5dp"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="56dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+        app:behavior_peekHeight="112dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <fragment
+            android:name="one.marcomass.ezeat.fragments.CheckoutFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

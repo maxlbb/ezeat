@@ -28,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> bottomSheetOpen;
+    private MutableLiveData<Float> minOrder;
 
     private MutableLiveData<List<Restaurant>> restaurantList;
 
@@ -58,6 +59,8 @@ public class MainViewModel extends AndroidViewModel {
 
         bottomSheetOpen = new MutableLiveData<>();
         bottomSheetOpen.setValue(BottomSheetBehavior.STATE_HIDDEN);
+        minOrder = new MutableLiveData<>();
+        minOrder.setValue(0f);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BackendAPI.BASE_URL)
@@ -113,8 +116,16 @@ public class MainViewModel extends AndroidViewModel {
         return bottomSheetOpen;
     }
 
-    public void setBottomSheetOpen(int state) {
+    public void setBottomSheetState(int state) {
         bottomSheetOpen.setValue(state);
+    }
+
+    public LiveData<Float> getMinOrder() {
+        return minOrder;
+    }
+
+    public void setMinOrder(float newMinOrder) {
+        minOrder.setValue(newMinOrder);
     }
 
     public LiveData<Menu> getRestaurantMenu(String restaurantID) {

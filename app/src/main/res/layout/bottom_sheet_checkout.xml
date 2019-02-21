@@ -1,93 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet_checkout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_bottom_sheet_checkout"
-    android:clipToPadding="false"
-    android:elevation="8dp"
-    android:paddingBottom="16dp"
-    android:clickable="true" >
+    android:paddingTop="56dp"
+    android:clipToPadding="false" >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_checkout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/text_checkout_total"
-        android:layout_below="@id/text_checkout_min_order"
-        android:layout_marginBottom="8dp" />
+        android:background="@drawable/background_bottom_sheet_checkout"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:elevation="8dp"
+        android:paddingBottom="16dp">
 
-    <TextView
-        android:id="@+id/text_checkout_riepilogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
-        android:text="totale"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-        android:textSize="16dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/text_checkout_total"
+            android:layout_below="@id/text_checkout_min_order"
+            android:layout_marginBottom="8dp" />
 
-    <TextView
-        android:id="@+id/text_checkout_total_up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/text_checkout_riepilogo"
-        android:layout_toLeftOf="@id/button_checkout_expand"
-        android:text="0 €"
-        android:layout_marginRight="16dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-        android:textSize="16dp" />
+        <TextView
+            android:id="@+id/text_checkout_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="16dp"
+            android:text="totale"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            android:textSize="16dp" />
 
-    <ImageButton
-        android:id="@+id/button_checkout_expand"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignBottom="@id/text_checkout_riepilogo"
-        android:layout_marginBottom="-6dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="32dp"
-        android:background="@android:color/transparent"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_expand_up" />
+        <TextView
+            android:id="@+id/text_checkout_total_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/text_checkout_title"
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@id/button_checkout_expand"
+            android:text="0 €"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            android:textSize="16dp" />
 
-    <TextView
-        android:id="@+id/text_checkout_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/button_checkout_order"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="32dp"
-        android:text="0€"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        <ImageButton
+            android:id="@+id/button_checkout_expand"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignBottom="@id/text_checkout_title"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="-6dp"
+            android:background="@android:color/transparent"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_expand_up" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/button_checkout_order"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="32dp"
-        android:text="Totale:"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        <TextView
+            android:id="@+id/text_checkout_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_checkout_order"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="32dp"
+            android:text="0€"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-    <TextView
-        android:id="@+id/text_checkout_min_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="56dp"
-        android:layout_marginRight="32dp"
-        android:text="min: 9.00"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_checkout_order"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="32dp"
+            android:text="Totale:"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-    <Button
-        android:id="@+id/button_checkout_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="ordina"
-        app:cornerRadius="50dp" />
+        <TextView
+            android:id="@+id/text_checkout_min_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="56dp"
+            android:layout_marginRight="16dp"
+            android:text="Ordine minimo: 9.00€"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/button_checkout_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="ordina"
+            app:cornerRadius="50dp" />
+
+    </RelativeLayout>
+</LinearLayout>

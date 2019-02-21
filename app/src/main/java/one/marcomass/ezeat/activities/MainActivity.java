@@ -5,56 +5,64 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import one.marcomass.ezeat.adapaters.MenuAdapter;
-import one.marcomass.ezeat.db.entity.DishEntity;
-import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
 import one.marcomass.ezeat.fragments.MenuFragment;
 import one.marcomass.ezeat.fragments.RestaurantFragment;
 import one.marcomass.ezeat.models.Restaurant;
+import one.marcomass.ezeat.viewmodels.MainViewModel;
 
 public class MainActivity extends AppCompatActivity implements RestaurantFragment.RestaurantSelector {
 
     private MainViewModel mainVM;
     private SharedPreferences sharedPreferences;
+    private LinearLayout linearCheckout;
+    private ImageButton buttonClose;
     private String token;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        linearCheckout = findViewById(R.id.linear_checkout);
+        buttonClose = findViewById(R.id.button_checkout_close);
+
         mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
         sharedPreferences = getSharedPreferences(Util.PREFERENCES, Context.MODE_PRIVATE);
         token = sharedPreferences.getString(Util.TOKEN, null);
         updateLogin();
 
-        final RelativeLayout bottomSheet = findViewById(R.id.fragment_checkout);
+        final LinearLayout bottomSheet = findViewById(R.id.fragment_checkout);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         mainVM.getBottomSheetState().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer state) {
+                if (state == BottomSheetBehavior.STATE_COLLAPSED) {
+                    linearCheckout.animate().translationY(-linearCheckout.getHeight()).setDuration(200).start();
+                } else if (state == BottomSheetBehavior.STATE_EXPANDED){
+                    linearCheckout.animate().translationY(linearCheckout.getHeight()).setDuration(200).start();
+                }
                 bottomSheetBehavior.setState(state);
             }
         });
@@ -64,10 +72,10 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_COLLAPSED);
+                        mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        mainVM.setBottomSheetOpen(BottomSheetBehavior.STATE_EXPANDED);
+                        mainVM.setBottomSheetState(BottomSheetBehavior.STATE_EXPANDED);
                         break;
                 }
 
@@ -83,6 +91,13 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             @Override
             public void onSlide(@NonNull View view, float v) {
 
+            }
+        });
+
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
 
@@ -143,10 +158,10 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
 
     //TODO change params
     @Override
-    public void selectRestaurant(Restaurant restaurant) {
+    public void selectRestaurant(String restaurantID) {
         MenuFragment menuFragment = new MenuFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Util.RESTAURANT_ID, restaurant.getID());
+        bundle.putString(Util.RESTAURANT_ID, restaurantID);
         menuFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, menuFragment);
