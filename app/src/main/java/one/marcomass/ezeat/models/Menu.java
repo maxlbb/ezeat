@@ -46,11 +46,11 @@ public class Menu {
         return address;
     }
 
-    public String getPhone_number() {
+    public String getPhoneNumber() {
         return phone_number;
     }
 
-    public float getMin_order() {
+    public float getMinOrder() {
         return min_order;
     }
 
