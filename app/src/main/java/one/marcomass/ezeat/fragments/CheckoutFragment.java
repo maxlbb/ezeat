@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import one.marcomass.ezeat.RecyclerViewEmpty;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.adapaters.CheckoutAdapter;
 import one.marcomass.ezeat.db.entity.DishEntity;
@@ -27,10 +27,9 @@ import one.marcomass.ezeat.viewmodels.MainViewModel;
 
 public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartManager {
 
-    private RecyclerView recyclerCheckout;
+    private RecyclerViewEmpty recyclerCheckout;
     private CheckoutAdapter checkoutAdapter;
     private MainViewModel mainViewModel;
-    private Toolbar toolbar;
     private ImageButton buttonExpand;
     private TextView textUpTotal;
     private TextView textTitle;
@@ -93,6 +92,7 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
 
         recyclerCheckout = view.findViewById(R.id.recycler_checkout);
         recyclerCheckout.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerCheckout.setEmptyView(view.findViewById(R.id.empty_view_checkout));
 
         final CheckoutAdapter.CartManager listener = this;
         mainViewModel.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
