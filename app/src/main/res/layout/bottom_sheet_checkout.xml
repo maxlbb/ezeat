@@ -4,8 +4,8 @@
     android:id="@+id/bottom_sheet_checkout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="56dp"
-    android:clipToPadding="false" >
+    android:clipToPadding="false"
+    android:paddingTop="56dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,10 +28,10 @@
             android:id="@+id/empty_view_checkout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Il carrello è vuoto"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/text_checkout_min_order"
+            android:layout_centerHorizontal="true"
             android:layout_margin="32dp"
+            android:text="Il carrello è vuoto"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:visibility="visible" />
 
@@ -41,6 +41,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="80dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             android:text="totale"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
             android:textSize="16dp" />

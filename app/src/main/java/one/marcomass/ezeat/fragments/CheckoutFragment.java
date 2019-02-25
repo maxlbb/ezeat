@@ -1,6 +1,7 @@
 package one.marcomass.ezeat.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import one.marcomass.ezeat.RecyclerViewEmpty;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.adapaters.CheckoutAdapter;
 import one.marcomass.ezeat.db.entity.DishEntity;
+import one.marcomass.ezeat.models.Menu;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 
 public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartManager {
@@ -37,8 +39,7 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
     private TextView textMinOrder;
     private Button buttonOrder;
 
-    private float actionBarElevetion = 0;
-    private float actionBarHeight = 0;
+    private String restaurantName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +85,11 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
                         buttonExpand.setImageResource(getResources()
                                 .getIdentifier("@drawable/ic_expand_down", null, getActivity().getPackageName()));
                         textUpTotal.setVisibility(View.GONE);
-                        textTitle.setText("Carrello");
+                        if (restaurantName == null) {
+                            textTitle.setText("Carrello");
+                        } else {
+                            textTitle.setText(restaurantName);
+                        }
                         break;
                 }
             }
@@ -127,6 +132,14 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
             }
         });
 
+        mainViewModel.getCurrentRestaurantID().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String id) {
+                Log.d("viewmodel", id + " id");
+                setRestaurantName(id);
+            }
+        });
+
         mainViewModel.getMinOrder().observe(this, new Observer<Float>() {
             @Override
             public void onChanged(Float minOrder) {
@@ -150,5 +163,24 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
     @Override
     public void removeAllDish(String dishID) {
         mainViewModel.removeAllDishFromCart(dishID);
+    }
+
+    public void setRestaurantName(String id) {
+        if (id != null) {
+            mainViewModel.getRestaurantMenu(id).observe(this, new Observer<Menu>() {
+                @Override
+                public void onChanged(Menu menu) {
+                    restaurantName = menu.getName();
+                    if (mainViewModel.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_EXPANDED) {
+                        textTitle.setText(restaurantName);
+                    }
+                }
+            });
+        } else {
+            if (mainViewModel.getBottomSheetState().getValue() == BottomSheetBehavior.STATE_EXPANDED) {
+                textTitle.setText("Carrello");
+                restaurantName = null;
+            }
+        }
     }
 }

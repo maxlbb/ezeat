@@ -1,6 +1,8 @@
 package one.marcomass.ezeat.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -11,8 +13,10 @@ import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import one.marcomass.ezeat.BackendAPI;
+import one.marcomass.ezeat.Util;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Dish;
 import one.marcomass.ezeat.models.Menu;
@@ -35,10 +39,13 @@ public class MainViewModel extends AndroidViewModel {
     private CartRepository cartRepository;
     private LiveData<Integer> cartAllDishCount;
     private LiveData<Float> cartTotal;
+    private LiveData<List<DishEntity>> cartAllDishes;
 
     private BackendAPI backendAPI;
 
     private MutableLiveData<Boolean> isLogged;
+
+    private LiveData<String> currentRestaurantID;
 
     public MainViewModel(Application application) {
         super(application);
@@ -69,16 +76,41 @@ public class MainViewModel extends AndroidViewModel {
         backendAPI = retrofit.create(BackendAPI.class);
 
         isLogged = new MutableLiveData<>();
+
+
+        cartAllDishes = cartRepository.getAllDishes();
+
+        currentRestaurantID = new MutableLiveData<>();
+        currentRestaurantID = Transformations.map(getCartAllDishes(), new Function<List<DishEntity>, String> () {
+            @Override
+            public String apply(List<DishEntity> input) {
+                if (input != null && input.size() > 0) {
+                    return input.get(0).getRestaurantID();
+                }
+                Log.d("viewmodel", "null id");
+                return null;
+            }
+        });
+
     }
 
     //Cart management ------------------------------------------------------------------------------
 
     public LiveData<List<DishEntity>> getCartAllDishes() {
-        return cartRepository.getAllDishes();
+        return cartAllDishes;
     }
 
-    public void addDishToCart(DishEntity dish) {
-        cartRepository.add(dish);
+    public boolean addDishToCart(DishEntity dish) {
+        //TODO find a better way to check if is from a different restaurant
+        if (currentRestaurantID.getValue() == null) {
+            cartRepository.add(dish);
+            return true;
+        } else if (cartAllDishes.getValue().get(0).getRestaurantID().equals(dish.getRestaurantID())) {
+            cartRepository.add(dish);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void removeDishFromCart(String dishID) {
@@ -226,5 +258,9 @@ public class MainViewModel extends AndroidViewModel {
 
     public void setIsLogged(Boolean isLogged) {
         this.isLogged.setValue(isLogged);
+    }
+
+    public LiveData<String> getCurrentRestaurantID() {
+        return currentRestaurantID;
     }
 }

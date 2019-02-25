@@ -47,7 +47,7 @@ public class CartRepository {
 
     public void removeAllDish(String dishID) { new removeAllDishAsyncTask(cartDAO).execute(dishID); }
 
-    private static class insertAsyncTask extends AsyncTask<DishEntity, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<DishEntity, Void, Boolean> {
 
         private CartDAO mAsyncTaskDao;
 
@@ -56,7 +56,7 @@ public class CartRepository {
         }
 
         @Override
-        protected Void doInBackground(final DishEntity... params) {
+        protected Boolean doInBackground(final DishEntity... params) {
             DishEntity dish = mAsyncTaskDao.getDishByID(params[0].getDishID());
             if (dish != null) {
                 mAsyncTaskDao.addDish(dish.getDishID());

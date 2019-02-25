@@ -1,17 +1,20 @@
 package one.marcomass.ezeat.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -19,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import one.marcomass.ezeat.activities.MainActivity;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Menu;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
@@ -60,6 +64,8 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
+        final ActionBar toolbar = ((MainActivity) getActivity()).getSupportActionBar();
+
         imageLogo = rootView.findViewById(R.id.image_restaurant_logo);
         //textMin = rootView.findViewById(R.id.text_restaurant_min_price);
         loadingProgressBar = rootView.findViewById(R.id.progress_menu);
@@ -92,6 +98,7 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
                     loaded = true;
                     mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
                     mainVM.setMinOrder(menu.getMinOrder());
+                    toolbar.setTitle(menu.getName());
                     //textMin.setText("Ordine minimo: " + menu.getMinOrder() + "€");
                 }
             }
@@ -114,8 +121,21 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     }
 
     @Override
-    public void addDish(DishEntity dish) {
-        mainVM.addDishToCart(dish);
+    public void addDish(final DishEntity dish) {
+        if (!mainVM.addDishToCart(dish)) {
+            new AlertDialog.Builder(getContext(), R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+                    .setTitle("Hai già un ordine")
+                    .setMessage("Puoi ordinare da un unico ristorante contemporaneamente. \nVuoi eliminare l'ordine precedente?")
+                    .setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mainVM.removeAllFromCart();
+                            mainVM.addDishToCart(dish);
+                        }
+                    })
+                    .setNegativeButton("Annulla", null)
+                    .show();
+        }
     }
 
     @Override
