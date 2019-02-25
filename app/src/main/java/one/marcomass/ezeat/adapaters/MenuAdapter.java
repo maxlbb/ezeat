@@ -76,7 +76,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
                 @Override
                 public void onClick(View v) {
                     Dish dish = dataSet.get(getAdapterPosition());
-                    listener.addDish(new DishEntity(0, dish.getID(), 1, dish.getPrice(), dish.getName()));
+                    listener.addDish(new DishEntity(0, dish.getID(), 1, dish.getPrice(), dish.getName(), dish.getRestaurant()));
                 }
             });
 

@@ -23,12 +23,16 @@ public class DishEntity {
     @ColumnInfo(name = "name")
     private String name;
 
-    public DishEntity(int id, String dishID, int quantity, float price, String name) {
+    @ColumnInfo(name = "restaurant_id")
+    private String restaurantID;
+
+    public DishEntity(int id, String dishID, int quantity, float price, String name, String restaurantID) {
         this.id = id;
         this.dishID = dishID;
         this.quantity = quantity;
         this.price = price;
         this.name = name;
+        this.restaurantID = restaurantID;
     }
 
     public int getId() {
@@ -49,5 +53,9 @@ public class DishEntity {
 
     public String getName() {
         return name;
+    }
+
+    public String getRestaurantID() {
+        return restaurantID;
     }
 }

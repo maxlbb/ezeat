@@ -10,9 +10,10 @@ public class Dish {
     private float price;
     private String id;
     private int quantity;
+    private String restaurant;
     private LiveData<Integer> liveQuantity;
 
-    public Dish(String name, String image_url, float price, String id) {
+    public Dish(String name, String image_url, float price, String id, String restaurant) {
         this.name = name;
         this.image_url = image_url;
         this.price = price;
@@ -42,6 +43,10 @@ public class Dish {
 
     public String getImageUrl() {
         return image_url;
+    }
+
+    public String getRestaurant() {
+        return restaurant;
     }
 
     public LiveData<Integer> setLiveQuantity(MainViewModel viewModel) {
