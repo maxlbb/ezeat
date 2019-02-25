@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -25,6 +27,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
+import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.fragments.MenuFragment;
 import one.marcomass.ezeat.fragments.RestaurantFragment;
 import one.marcomass.ezeat.models.Restaurant;
@@ -46,10 +49,12 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         linearCheckout = findViewById(R.id.linear_checkout);
         buttonClose = findViewById(R.id.button_checkout_close);
 
         mainVM = ViewModelProviders.of(this).get(MainViewModel.class);
+
         sharedPreferences = getSharedPreferences(Util.PREFERENCES, Context.MODE_PRIVATE);
         token = sharedPreferences.getString(Util.TOKEN, null);
         updateLogin();
@@ -164,6 +169,9 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
     public void selectRestaurant(final Restaurant restaurant) {
         //TODO temp - check order restaurant id
         //TODO find a better way to check if order exist
+
+        openRestaurantFragment(restaurant);
+        /*
         String oldRestaurantID = sharedPreferences.getString(Util.RESTAURANT_ID, null);
         if (restaurant.getID().equals(oldRestaurantID) || oldRestaurantID == null) {
             openRestaurantFragment(restaurant);
@@ -182,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
                     .setNegativeButton("Annulla", null)
                     .show();
         }
+        */
     }
 
     private void updateLogin() {

@@ -16,12 +16,14 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import one.marcomass.ezeat.activities.MainActivity;
 import one.marcomass.ezeat.adapaters.RestaurantsGridAdapter;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
@@ -65,6 +67,10 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
+
+        ActionBar toolbar = ((MainActivity) getActivity()).getSupportActionBar();
+        toolbar.setTitle("Ezeat");
+
         recyclerRestaurants = rootView.findViewById(R.id.recycler_main_restaurants);
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
         adapterRestaurants = new RestaurantsAdapter(restaurantsList, restListener);
