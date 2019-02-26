@@ -1,8 +1,11 @@
 package one.marcomass.ezeat.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -56,7 +59,11 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
         if (getArguments() != null) {
             restaurantID = getArguments().getString(Util.RESTAURANT_ID, "noID");
         }
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Nullable
@@ -65,6 +72,8 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
         final ActionBar toolbar = ((MainActivity) getActivity()).getSupportActionBar();
+        toolbar.setTitle("");
+        toolbar.setDisplayHomeAsUpEnabled(true);
 
         imageLogo = rootView.findViewById(R.id.image_restaurant_logo);
         //textMin = rootView.findViewById(R.id.text_restaurant_min_price);

@@ -145,8 +145,11 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
                 Intent intentLogin = new Intent(this, LoginActivity.class);
                 startActivityForResult(intentLogin, Util.REQUEST_LOGIN);
                 break;
+            case android.R.id.home:
+                onBackPressed();
+                break;
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -161,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
                 if (resultCode == Activity.RESULT_OK) {
                     updateLogin();
                 }
+                break;
         }
     }
 
@@ -198,6 +202,8 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
         invalidateOptionsMenu();
         if (token != null) {
             mainVM.setIsLogged(true);
+        } else {
+            mainVM.setIsLogged(false);
         }
     }
 

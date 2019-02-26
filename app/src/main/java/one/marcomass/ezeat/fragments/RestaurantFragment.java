@@ -70,6 +70,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
 
         ActionBar toolbar = ((MainActivity) getActivity()).getSupportActionBar();
         toolbar.setTitle("Ezeat");
+        toolbar.setDisplayHomeAsUpEnabled(false);
 
         recyclerRestaurants = rootView.findViewById(R.id.recycler_main_restaurants);
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
