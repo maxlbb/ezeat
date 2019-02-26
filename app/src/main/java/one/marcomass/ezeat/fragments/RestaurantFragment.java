@@ -115,13 +115,14 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
             menu.findItem(R.id.action_grid).setVisible(false);
             menu.findItem(R.id.action_linear).setVisible(true);
         }
-        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.restaurants_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        //TODO check instance state instead
+        if (menu.findItem(R.id.action_grid) == null) {
+            inflater.inflate(R.menu.restaurants_menu, menu);
+        }
     }
 
     @Override
