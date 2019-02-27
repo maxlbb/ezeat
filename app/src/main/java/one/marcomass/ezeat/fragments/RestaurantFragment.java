@@ -139,7 +139,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
                 getActivity().invalidateOptionsMenu();
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return false;
 
         }
     }

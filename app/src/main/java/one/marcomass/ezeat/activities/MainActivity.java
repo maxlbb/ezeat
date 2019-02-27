@@ -140,16 +140,16 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
             case R.id.action_account:
                 Intent intentLogout = new Intent(this, AccountActivity.class);
                 startActivityForResult(intentLogout, Util.REQUEST_LOGOUT);
-                break;
+                return true;
             case R.id.action_login:
                 Intent intentLogin = new Intent(this, LoginActivity.class);
                 startActivityForResult(intentLogin, Util.REQUEST_LOGIN);
-                break;
+                return true;
             case android.R.id.home:
                 onBackPressed();
-                break;
+                return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -171,30 +171,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
     //TODO change params
     @Override
     public void selectRestaurant(final Restaurant restaurant) {
-        //TODO temp - check order restaurant id
-        //TODO find a better way to check if order exist
-
         openRestaurantFragment(restaurant);
-        /*
-        String oldRestaurantID = sharedPreferences.getString(Util.RESTAURANT_ID, null);
-        if (restaurant.getID().equals(oldRestaurantID) || oldRestaurantID == null) {
-            openRestaurantFragment(restaurant);
-        } else {
-            String restaurantName = sharedPreferences.getString(Util.RESTAURANT_NAME, "no name");
-            new AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
-                    .setTitle("Stai ordinando da " + restaurantName)
-                    .setMessage("Puoi ordinare da un unico ristorante contemporaneamente. \nVuoi eliminare l'ordine?")
-                    .setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            openRestaurantFragment(restaurant);
-                            mainVM.removeAllFromCart();
-                        }
-                    })
-                    .setNegativeButton("Annulla", null)
-                    .show();
-        }
-        */
     }
 
     private void updateLogin() {
@@ -208,10 +185,6 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
     }
 
     private void openRestaurantFragment(Restaurant restaurant) {
-        sharedPreferences.edit()
-                .putString(Util.RESTAURANT_ID, restaurant.getID())
-                .putString(Util.RESTAURANT_NAME, restaurant.getName())
-                .apply();
         MenuFragment menuFragment = new MenuFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Util.RESTAURANT_ID, restaurant.getID());
