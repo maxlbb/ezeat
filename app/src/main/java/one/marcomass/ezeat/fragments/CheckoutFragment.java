@@ -23,6 +23,7 @@ import one.marcomass.ezeat.RecyclerViewEmpty;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
 import one.marcomass.ezeat.activities.AccountActivity;
+import one.marcomass.ezeat.activities.LoginActivity;
 import one.marcomass.ezeat.adapaters.CheckoutAdapter;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Menu;
@@ -73,11 +74,11 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.OrderM
         buttonOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainViewModel.getIsLogged().getValue()) {
-                    Intent intentLogout = new Intent(getActivity(), AccountActivity.class);
-                    startActivityForResult(intentLogout, Util.REQUEST_LOGOUT);
+                if (mainViewModel.isLogged()) {
+                    //TODO send post request
                 } else {
-
+                    Intent intentLogout = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivityForResult(intentLogout, Util.REQUEST_LOGIN);
                 }
             }
         });
@@ -131,7 +132,7 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.OrderM
                 if (total != null) {
                     textTotal.setText(String.format("%.2f", total) + " €");
                     textUpTotal.setText(String.format("%.2f", total) + " €");
-                    buttonOrder.setEnabled(total >= orderViewModel.getMinimum().getValue());
+                    checkOrderEnable();
                 } else {
                     textTotal.setText("0.00 €");
                     textUpTotal.setText("0.00 €");
@@ -170,6 +171,12 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.OrderM
     @Override
     public void removeAllDish(String dishID) {
         orderViewModel.removeAllDish(dishID);
+    }
+
+    public void checkOrderEnable() {
+        if (orderViewModel.getTotal().getValue() != null) {
+            buttonOrder.setEnabled(orderViewModel.getTotal().getValue() >= orderViewModel.getMinimum().getValue());
+        }
     }
 
     public void setRestaurantName(String id) {

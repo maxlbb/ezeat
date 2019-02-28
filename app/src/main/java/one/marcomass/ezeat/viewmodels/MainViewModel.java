@@ -20,7 +20,7 @@ import retrofit2.Response;
 
 public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> bottomSheetOpen;
-    private MutableLiveData<Boolean> isLogged;
+    private boolean isLogged;
 
     private LiveData<List<Restaurant>> restaurants;
 
@@ -34,9 +34,6 @@ public class MainViewModel extends AndroidViewModel {
 
         backendRepository = BackendRepository.getInstance();
         restaurants = backendRepository.getRestaurants();
-
-        isLogged = new MutableLiveData<>();
-
     }
 
     public LiveData<Menu> getRestaurantMenu(String restaurantID) {
@@ -55,12 +52,12 @@ public class MainViewModel extends AndroidViewModel {
         bottomSheetOpen.setValue(state);
     }
 
-    public LiveData<Boolean> getIsLogged() {
+    public boolean isLogged() {
         return isLogged;
     }
 
-    public void setIsLogged(Boolean isLogged) {
-        this.isLogged.setValue(isLogged);
+    public void setIfLogged(boolean isLogged) {
+        this.isLogged = isLogged;
     }
 
 }

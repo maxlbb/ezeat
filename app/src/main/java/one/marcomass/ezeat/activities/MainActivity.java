@@ -172,11 +172,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantFragmen
     private void updateLogin() {
         token = sharedPreferences.getString(Util.TOKEN, null);
         invalidateOptionsMenu();
-        if (token != null) {
-            mainViewModel.setIsLogged(true);
-        } else {
-            mainViewModel.setIsLogged(false);
-        }
+        mainViewModel.setIfLogged(token != null);
     }
 
     private void openRestaurantFragment(Restaurant restaurant) {
