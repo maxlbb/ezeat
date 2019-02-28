@@ -1,4 +1,4 @@
-package one.marcomass.ezeat;
+package one.marcomass.ezeat.repos;
 
 
 import java.util.List;

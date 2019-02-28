@@ -7,51 +7,59 @@ import android.util.Log;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import one.marcomass.ezeat.db.CartDAO;
-import one.marcomass.ezeat.db.CartRoomDatabase;
+import one.marcomass.ezeat.db.OrderDAO;
+import one.marcomass.ezeat.db.OrderRoomDatabase;
 import one.marcomass.ezeat.db.entity.DishEntity;
-import one.marcomass.ezeat.models.Dish;
 
-public class CartRepository {
+public class OrderRepository {
 
-    private CartDAO cartDAO;
+    private static OrderRepository INSTANCE = null;
 
-    public CartRepository(Application application) {
-        CartRoomDatabase cartRoomDatabase = CartRoomDatabase.getDatabase(application);
-        cartDAO = cartRoomDatabase.cartDAO();
+    private OrderDAO orderDAO;
+
+    private OrderRepository(Application application) {
+        OrderRoomDatabase orderRoomDatabase = OrderRoomDatabase.getDatabase(application);
+        orderDAO = orderRoomDatabase.orderDAO();
+    }
+
+    public static OrderRepository getInstance(Application application) {
+        if (INSTANCE == null) {
+            return new OrderRepository(application);
+        }
+        return INSTANCE;
     }
 
     public LiveData<Integer> getDishQuantity(String dishID) {
-        return cartDAO.getDishQuantity(dishID);
+        return orderDAO.getDishQuantity(dishID);
     }
 
     public LiveData<List<DishEntity>> getAllDishes() {
-        return cartDAO.getAllDishes();
+        return orderDAO.getAllDishes();
     }
 
     public LiveData<Float> getTotal() {
-        return cartDAO.getTotal();
+        return orderDAO.getTotal();
     }
 
     public void add(DishEntity dish) {
-        new insertAsyncTask(cartDAO).execute(dish);
+        new insertAsyncTask(orderDAO).execute(dish);
     }
 
     public void removeAll() {
-        new removeAllAsyncTask(cartDAO).execute();
+        new removeAllAsyncTask(orderDAO).execute();
     }
 
     public void removeDish(String dishID) {
-        new removeDishAsyncTask(cartDAO).execute(dishID);
+        new removeDishAsyncTask(orderDAO).execute(dishID);
     }
 
-    public void removeAllDish(String dishID) { new removeAllDishAsyncTask(cartDAO).execute(dishID); }
+    public void removeAllDish(String dishID) { new removeAllDishAsyncTask(orderDAO).execute(dishID); }
 
     private static class insertAsyncTask extends AsyncTask<DishEntity, Void, Boolean> {
 
-        private CartDAO mAsyncTaskDao;
+        private OrderDAO mAsyncTaskDao;
 
-        insertAsyncTask(CartDAO dao) {
+        insertAsyncTask(OrderDAO dao) {
             mAsyncTaskDao = dao;
         }
 
@@ -69,9 +77,9 @@ public class CartRepository {
 
     private static class removeAllAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        private CartDAO mAsyncTaskDao;
+        private OrderDAO mAsyncTaskDao;
 
-        removeAllAsyncTask(CartDAO dao) {
+        removeAllAsyncTask(OrderDAO dao) {
             mAsyncTaskDao = dao;
         }
 
@@ -84,9 +92,9 @@ public class CartRepository {
 
     private static class removeDishAsyncTask extends AsyncTask<String, Void, Void> {
 
-        private CartDAO mAsyncTaskDao;
+        private OrderDAO mAsyncTaskDao;
 
-        removeDishAsyncTask(CartDAO dao) {
+        removeDishAsyncTask(OrderDAO dao) {
             mAsyncTaskDao = dao;
         }
 
@@ -107,9 +115,9 @@ public class CartRepository {
 
     private static class removeAllDishAsyncTask extends AsyncTask<String, Void, Void> {
 
-        private CartDAO mAsyncTaskDao;
+        private OrderDAO mAsyncTaskDao;
 
-        removeAllDishAsyncTask(CartDAO dao) {
+        removeAllDishAsyncTask(OrderDAO dao) {
             mAsyncTaskDao = dao;
         }
 

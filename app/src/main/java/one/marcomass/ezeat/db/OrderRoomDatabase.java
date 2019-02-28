@@ -8,18 +8,18 @@ import androidx.room.RoomDatabase;
 import one.marcomass.ezeat.db.entity.DishEntity;
 
 @Database(entities = {DishEntity.class}, version = 1)
-public abstract class CartRoomDatabase extends RoomDatabase {
+public abstract class OrderRoomDatabase extends RoomDatabase {
 
-    public abstract CartDAO cartDAO();
+    public abstract OrderDAO orderDAO();
 
-    private static volatile CartRoomDatabase INSTANCE;
+    private static volatile OrderRoomDatabase INSTANCE;
 
-    public static CartRoomDatabase getDatabase(final Context context) {
+    public static OrderRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (CartRoomDatabase.class) {
+            synchronized (OrderRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            CartRoomDatabase.class, "cart_database")
+                            OrderRoomDatabase.class, "order_database")
                             .build();
                 }
             }
