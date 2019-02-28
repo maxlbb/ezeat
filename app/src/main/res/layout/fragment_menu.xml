@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -8,14 +10,103 @@
     <ImageView
         android:id="@+id/image_restaurant_logo"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="176dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background" />
+        tools:src="@drawable/ic_launcher_background" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/image_restaurant_logo"
+        android:layout_marginBottom="56dp"
+        android:clipToPadding="false"
+        android:paddingTop="76dp" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_container_restaurant"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:visibility="gone">
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/text_restaurant_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_marginBottom="8dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                tools:text="Description" />
+
+            <ImageView
+                android:id="@+id/icon_phone"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_below="@id/text_restaurant_description"
+                android:padding="4dp"
+                android:src="@drawable/ic_phone" />
+
+            <TextView
+                android:id="@+id/text_restaurant_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_restaurant_description"
+                android:layout_toRightOf="@id/icon_place"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:textColor="?android:textColorSecondary"
+                tools:text="3470282455" />
+
+            <ImageView
+                android:id="@+id/icon_place"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:padding="2dp"
+                android:layout_below="@id/text_restaurant_phone_number"
+                android:src="@drawable/ic_place_black" />
+
+            <TextView
+                android:id="@+id/text_restaurant_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_restaurant_phone_number"
+                android:layout_toRightOf="@id/icon_place"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:textColor="?android:textColorSecondary"
+                tools:text="Address" />
+
+            <RatingBar
+                android:id="@+id/rating_restaurant"
+                style="?attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"/>
+
+            <TextView
+                android:id="@+id/text_restaurant_min_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="56dp"
+                android:layout_alignParentBottom="true"
+                tools:text="Ordine minimo: 9.00€"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+        </RelativeLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -24,14 +115,5 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_centerInParent="true" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_menu"
-        android:layout_below="@id/image_restaurant_logo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="56dp"
-        android:clipToPadding="false"
-        android:visibility="gone" />
 
 </RelativeLayout>

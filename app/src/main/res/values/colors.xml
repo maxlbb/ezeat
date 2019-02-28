@@ -5,4 +5,5 @@
     <color name="colorLight">#ff737c</color>
     <color name="colorAccent">#D81B60</color>
     <color name="redBack">#F53B50</color>
+    <color name="blackTransparent">#32000000</color>
 </resources>

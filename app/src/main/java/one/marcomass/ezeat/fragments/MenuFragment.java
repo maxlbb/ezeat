@@ -2,13 +2,14 @@ package one.marcomass.ezeat.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.squareup.picasso.Picasso;
@@ -36,6 +37,7 @@ import one.marcomass.ezeat.adapaters.MenuAdapter;
 public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
 
     private RecyclerView recyclerMenu;
+    private ActionBar toolbar;
     private MainViewModel mainVM;
     private MenuAdapter menuAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -43,7 +45,12 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     private String restaurantID;
 
     private ImageView imageLogo;
-    private TextView textMin;
+    private TextView textName;
+    private TextView textDescription;
+    private TextView textAddress;
+    private TextView textPhoneNumber;
+    private TextView textMinOrder;
+    private RatingBar ratingBar;
 
     private boolean loaded = false;
 
@@ -51,6 +58,7 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainVM = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        setHasOptionsMenu(false);
 
         if (loaded) {
             mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -71,12 +79,20 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
-        final ActionBar toolbar = ((MainActivity) getActivity()).getSupportActionBar();
+        toolbar = ((MainActivity) getActivity()).getSupportActionBar();
         toolbar.setTitle("");
         toolbar.setDisplayHomeAsUpEnabled(true);
 
+        getActivity().findViewById(R.id.toolbar).setBackground(getResources().getDrawable(R.drawable.gradient_toolbar));
+
         imageLogo = rootView.findViewById(R.id.image_restaurant_logo);
-        //textMin = rootView.findViewById(R.id.text_restaurant_min_price);
+        //textName = rootView.findViewById(R.id.text_restaurant_name);
+        textDescription = rootView.findViewById(R.id.text_restaurant_description);
+        textAddress = rootView.findViewById(R.id.text_restaurant_address);
+        textPhoneNumber = rootView.findViewById(R.id.text_restaurant_phone_number);
+        textMinOrder = rootView.findViewById(R.id.text_restaurant_min_order);
+        ratingBar = rootView.findViewById(R.id.rating_restaurant);
+
         loadingProgressBar = rootView.findViewById(R.id.progress_menu);
         recyclerMenu = rootView.findViewById(R.id.recycler_menu);
         linearLayoutManager = new LinearLayoutManager(getContext());
@@ -101,14 +117,11 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
                             }
                         });
                     }
+                    bindRestaurantData(menu);
                     menuAdapter.setDataSet(menu.getProducts());
-                    recyclerMenu.setVisibility(View.VISIBLE);
-                    Picasso.get().load(menu.getImage_url()).into(imageLogo);
                     loaded = true;
                     mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
                     mainVM.setMinOrder(menu.getMinOrder());
-                    toolbar.setTitle(menu.getName());
-                    //textMin.setText("Ordine minimo: " + menu.getMinOrder() + "€");
                 }
             }
         });
@@ -150,6 +163,17 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
     @Override
     public void removeDish(String dishID) {
         mainVM.removeDishFromCart(dishID);
+    }
+
+    public void bindRestaurantData(Menu menu) {
+        //textName.setText(menu.getName());
+        textDescription.setText(menu.getDescription());
+        textAddress.setText(menu.getAddress());
+        textPhoneNumber.setText(menu.getPhoneNumber());
+        textMinOrder.setText("Ordine minimo: " + String.format("%.2f", menu.getMinOrder()) + "€");
+        ratingBar.setRating(menu.getRating());
+        Picasso.get().load(menu.getImage_url()).into(imageLogo);
+        toolbar.setTitle(menu.getName());
     }
 }
 

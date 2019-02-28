@@ -6,14 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
 
     <style name="AppThemeNoAction" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-
 
         <item name="colorControlNormal">#66FFFFFF</item>
         <item name="colorControlActivated">#FFFFFF</item>
@@ -23,9 +21,10 @@
 
     </style>
 
-    <style name="Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="actionBarItemBackground">@color/colorPrimary</item>
+    <style name="Toolbar" parent="ThemeOverlay.MaterialComponents.Light">
+        <item name="android:maxHeight">@dimen/abc_action_bar_default_height_material</item>
         <item name="android:background">@color/colorPrimary</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
 </resources>
