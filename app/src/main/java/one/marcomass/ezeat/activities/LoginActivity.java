@@ -20,11 +20,13 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
 import one.marcomass.ezeat.models.SignResponse;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
+import one.marcomass.ezeat.viewmodels.UserViewModel;
 
 public class LoginActivity extends AppCompatActivity implements TextWatcher {
 
@@ -37,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
     private Button buttonSign;
     private boolean login = true;
 
-    private MainViewModel mainViewModel;
+    private UserViewModel userViewModel;
 
     private SharedPreferences sharedPreferences;
 
@@ -46,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         textSwitch = findViewById(R.id.text_login_switch);
         textAlready = findViewById(R.id.text_login_already);
@@ -92,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
             @Override
             public void onClick(View v) {
                 if (login) {
-                    mainViewModel.login(editUsername.getText().toString(),
+                    userViewModel.login(editUsername.getText().toString(),
                             editPassword.getText().toString())
                             .observe(activity, new Observer<SignResponse>() {
                                 @Override
@@ -114,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                                 }
                             });
                 } else {
-                    mainViewModel.register(editUsername.getText().toString(),
+                    userViewModel.register(editUsername.getText().toString(),
                             editPassword.getText().toString(),
                             editEmail.getText().toString())
                             .observe(activity, new Observer<SignResponse>() {

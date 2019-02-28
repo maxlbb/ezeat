@@ -1,6 +1,5 @@
 package one.marcomass.ezeat.adapaters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,11 @@ import one.marcomass.ezeat.db.entity.DishEntity;
 public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHolder> {
 
     public List<DishEntity> dataSet;
-    private CartManager cartListener;
+    private OrderManager orderListener;
 
-    public CheckoutAdapter(List<DishEntity> dishes, CartManager cartListener) {
+    public CheckoutAdapter(List<DishEntity> dishes, OrderManager orderListener) {
         this.dataSet = dishes;
-        this.cartListener = cartListener;
+        this.orderListener = orderListener;
     }
 
     public void setDataSet(List<DishEntity> dataSet) {
@@ -50,21 +49,21 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
             buttonAddDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cartListener.addDish(dataSet.get(getAdapterPosition()));
+                    orderListener.addDish(dataSet.get(getAdapterPosition()));
                 }
             });
 
             buttonRemoveDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cartListener.removeDish(dataSet.get(getAdapterPosition()).getDishID());
+                    orderListener.removeDish(dataSet.get(getAdapterPosition()).getDishID());
                 }
             });
 
             buttonRemoveAllDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cartListener.removeAllDish(dataSet.get(getAdapterPosition()).getDishID());
+                    orderListener.removeAllDish(dataSet.get(getAdapterPosition()).getDishID());
                 }
             });
         }
@@ -91,10 +90,10 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        return dataSet == null ? 0 : dataSet.size();
     }
 
-    public interface CartManager {
+    public interface OrderManager {
         void addDish(DishEntity dish);
         void removeDish(String dishID);
         void removeAllDish(String dishID);

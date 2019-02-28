@@ -2,6 +2,7 @@ package one.marcomass.ezeat.models;
 
 import androidx.lifecycle.LiveData;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
+import one.marcomass.ezeat.viewmodels.OrderViewModel;
 
 public class Dish {
 
@@ -49,7 +50,7 @@ public class Dish {
         return restaurant;
     }
 
-    public LiveData<Integer> setLiveQuantity(MainViewModel viewModel) {
+    public LiveData<Integer> setLiveQuantity(OrderViewModel viewModel) {
         if (liveQuantity == null) {
             liveQuantity = viewModel.getDishQuantity(getID());
         }

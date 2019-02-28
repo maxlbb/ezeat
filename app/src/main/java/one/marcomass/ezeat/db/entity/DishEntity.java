@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "cart_table", indices=@Index(value = "dish_id", unique = true))
+@Entity(tableName = "order_table", indices=@Index(value = "dish_id", unique = true))
 public class DishEntity {
 
     @PrimaryKey(autoGenerate = true)

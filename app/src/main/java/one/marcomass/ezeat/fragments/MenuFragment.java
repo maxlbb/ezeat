@@ -2,10 +2,8 @@ package one.marcomass.ezeat.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -33,12 +30,12 @@ import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.Util;
 import one.marcomass.ezeat.adapaters.MenuAdapter;
+import one.marcomass.ezeat.viewmodels.OrderViewModel;
 
-public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
+public class MenuFragment extends Fragment implements MenuAdapter.OrderManager {
 
     private RecyclerView recyclerMenu;
     private ActionBar toolbar;
-    private MainViewModel mainVM;
     private MenuAdapter menuAdapter;
     private LinearLayoutManager linearLayoutManager;
     private ContentLoadingProgressBar loadingProgressBar;
@@ -54,14 +51,19 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
 
     private boolean loaded = false;
 
+
+    private MainViewModel mainViewModel;
+    private OrderViewModel orderViewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainVM = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        orderViewModel = ViewModelProviders.of(getActivity()).get(OrderViewModel.class);
         setHasOptionsMenu(false);
 
         if (loaded) {
-            mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
+            mainViewModel.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
         if (getArguments() != null) {
@@ -103,13 +105,13 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
 
         final MenuFragment lifecycle = this;
 
-        mainVM.getRestaurantMenu(restaurantID).observe(this, new Observer<Menu>() {
+        mainViewModel.getRestaurantMenu(restaurantID).observe(this, new Observer<Menu>() {
             @Override
             public void onChanged(final Menu menu) {
                 if (menu.getProducts() != null) {
                     for (int i = 0; i < menu.getProducts().size(); i++) {
                         final int pos = i;
-                        menu.getProducts().get(pos).setLiveQuantity(mainVM).observe(lifecycle, new Observer<Integer>() {
+                        menu.getProducts().get(pos).setLiveQuantity(orderViewModel).observe(lifecycle, new Observer<Integer>() {
                             @Override
                             public void onChanged(Integer integer) {
                                 menu.getProducts().get(pos).setQuantity(integer == null ? 0 : integer);
@@ -120,8 +122,8 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
                     bindRestaurantData(menu);
                     menuAdapter.setDataSet(menu.getProducts());
                     loaded = true;
-                    mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
-                    mainVM.setMinOrder(menu.getMinOrder());
+                    mainViewModel.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
+                    orderViewModel.setMinimum(menu.getMinOrder());
                 }
             }
         });
@@ -130,29 +132,30 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
 
     @Override
     public void onPause() {
-        mainVM.setBottomSheetState(BottomSheetBehavior.STATE_HIDDEN);
+        mainViewModel.setBottomSheetState(BottomSheetBehavior.STATE_HIDDEN);
         super.onPause();
     }
 
     @Override
     public void onResume() {
         if (loaded) {
-            mainVM.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
+            mainViewModel.setBottomSheetState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         super.onResume();
     }
 
     @Override
     public void addDish(final DishEntity dish) {
-        if (!mainVM.addDishToCart(dish)) {
+        if (!orderViewModel.addDish(dish)) {
             new AlertDialog.Builder(getContext(), R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
                     .setTitle("Hai già un ordine")
                     .setMessage("Puoi ordinare da un unico ristorante contemporaneamente. \nVuoi eliminare l'ordine precedente?")
                     .setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mainVM.removeAllFromCart();
-                            mainVM.addDishToCart(dish);
+                            orderViewModel.removeAll();
+                            //TODO check thread concurrency
+                            orderViewModel.addDish(dish);
                         }
                     })
                     .setNegativeButton("Annulla", null)
@@ -162,7 +165,7 @@ public class MenuFragment extends Fragment implements MenuAdapter.CartManager {
 
     @Override
     public void removeDish(String dishID) {
-        mainVM.removeDishFromCart(dishID);
+        orderViewModel.removeDish(dishID);
     }
 
     public void bindRestaurantData(Menu menu) {

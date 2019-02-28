@@ -2,7 +2,6 @@ package one.marcomass.ezeat.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,17 +20,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import one.marcomass.ezeat.activities.MainActivity;
 import one.marcomass.ezeat.adapaters.RestaurantsGridAdapter;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
 import one.marcomass.ezeat.R;
-import one.marcomass.ezeat.SwitchPage;
 import one.marcomass.ezeat.adapaters.RestaurantsAdapter;
 import one.marcomass.ezeat.models.Restaurant;
 
-public class RestaurantFragment extends Fragment implements SwitchPage {
+public class RestaurantFragment extends Fragment {
 
     private TextView textHeader;
     private RecyclerView recyclerRestaurants;
@@ -83,7 +80,7 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
 
         textHeader = rootView.findViewById(R.id.text_restaurant_header);
 
-        mainVM.getRestaurantList().observe(this, new Observer<List<Restaurant>>() {
+        mainVM.getRestaurants().observe(this, new Observer<List<Restaurant>>() {
             @Override
             public void onChanged(List<Restaurant> restaurants) {
                 if (restaurantsList.size() == 0) {
@@ -96,11 +93,6 @@ public class RestaurantFragment extends Fragment implements SwitchPage {
         });
 
         return rootView;
-    }
-
-    @Override
-    public void switchPage(Restaurant restaurant) {
-        //mainVM.setSelectRestaurant(restaurant);
     }
 
     public interface RestaurantSelector {

@@ -1,7 +1,7 @@
 package one.marcomass.ezeat.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +15,21 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import one.marcomass.ezeat.RecyclerViewEmpty;
 import one.marcomass.ezeat.R;
+import one.marcomass.ezeat.Util;
+import one.marcomass.ezeat.activities.AccountActivity;
 import one.marcomass.ezeat.adapaters.CheckoutAdapter;
 import one.marcomass.ezeat.db.entity.DishEntity;
 import one.marcomass.ezeat.models.Menu;
 import one.marcomass.ezeat.viewmodels.MainViewModel;
+import one.marcomass.ezeat.viewmodels.OrderViewModel;
 
-public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartManager {
+public class CheckoutFragment extends Fragment implements CheckoutAdapter.OrderManager {
 
     private RecyclerViewEmpty recyclerCheckout;
     private CheckoutAdapter checkoutAdapter;
@@ -41,11 +43,13 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
 
     private String restaurantName;
 
+    private OrderViewModel orderViewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-
+        orderViewModel = ViewModelProviders.of(getActivity()).get(OrderViewModel.class);
     }
 
     @Nullable
@@ -58,6 +62,25 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
         textTitle = view.findViewById(R.id.text_checkout_title);
         textMinOrder = view.findViewById(R.id.text_checkout_min_order);
         buttonOrder = view.findViewById(R.id.button_checkout_order);
+
+        recyclerCheckout = view.findViewById(R.id.recycler_checkout);
+        recyclerCheckout.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerCheckout.setEmptyView(view.findViewById(R.id.empty_view_checkout));
+        checkoutAdapter = new CheckoutAdapter(null, this);
+        recyclerCheckout.setAdapter(checkoutAdapter);
+
+        //TODO implement
+        buttonOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mainViewModel.getIsLogged().getValue()) {
+                    Intent intentLogout = new Intent(getActivity(), AccountActivity.class);
+                    startActivityForResult(intentLogout, Util.REQUEST_LOGOUT);
+                } else {
+
+                }
+            }
+        });
 
         buttonExpand = view.findViewById(R.id.button_checkout_expand);
         buttonExpand.setOnClickListener(new View.OnClickListener() {
@@ -95,35 +118,20 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
             }
         });
 
-        recyclerCheckout = view.findViewById(R.id.recycler_checkout);
-        recyclerCheckout.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerCheckout.setEmptyView(view.findViewById(R.id.empty_view_checkout));
-
-        final CheckoutAdapter.CartManager listener = this;
-        mainViewModel.getCartAllDishes().observe(this, new Observer<List<DishEntity>>() {
+        orderViewModel.getAllDishes().observe(this, new Observer<List<DishEntity>>() {
             @Override
             public void onChanged(List<DishEntity> dishEntities) {
-                if (dishEntities != null) {
-                    if (checkoutAdapter == null) {
-                        checkoutAdapter = new CheckoutAdapter(dishEntities, listener);
-                        recyclerCheckout.setAdapter(checkoutAdapter);
-                    } else {
-                        checkoutAdapter.setDataSet(dishEntities);
-                    }
-                }
+                checkoutAdapter.setDataSet(dishEntities);
             }
         });
-        mainViewModel.getCartTotal().observe(this, new Observer<Float>() {
+
+        orderViewModel.getTotal().observe(this, new Observer<Float>() {
             @Override
             public void onChanged(Float total) {
                 if (total != null) {
                     textTotal.setText(String.format("%.2f", total) + " €");
                     textUpTotal.setText(String.format("%.2f", total) + " €");
-                    if (total >= mainViewModel.getMinOrder().getValue()) {
-                        buttonOrder.setEnabled(true);
-                    } else {
-                        buttonOrder.setEnabled(false);
-                    }
+                    buttonOrder.setEnabled(total >= orderViewModel.getMinimum().getValue());
                 } else {
                     textTotal.setText("0.00 €");
                     textUpTotal.setText("0.00 €");
@@ -132,15 +140,14 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
             }
         });
 
-        mainViewModel.getCurrentRestaurantID().observe(this, new Observer<String>() {
+        orderViewModel.getOrderRestaurantID().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String id) {
-                Log.d("viewmodel", id + " id");
                 setRestaurantName(id);
             }
         });
 
-        mainViewModel.getMinOrder().observe(this, new Observer<Float>() {
+        orderViewModel.getMinimum().observe(this, new Observer<Float>() {
             @Override
             public void onChanged(Float minOrder) {
                 textMinOrder.setText("Ordine minimo: " + String.format("%.2f", minOrder) + "€");
@@ -152,21 +159,22 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.CartMa
 
     @Override
     public void addDish(DishEntity dish) {
-        mainViewModel.addDishToCart(dish);
+        orderViewModel.addDish(dish);
     }
 
     @Override
     public void removeDish(String dishID) {
-        mainViewModel.removeDishFromCart(dishID);
+        orderViewModel.removeDish(dishID);
     }
 
     @Override
     public void removeAllDish(String dishID) {
-        mainViewModel.removeAllDishFromCart(dishID);
+        orderViewModel.removeAllDish(dishID);
     }
 
     public void setRestaurantName(String id) {
         if (id != null) {
+            //TODO avoid to do network call
             mainViewModel.getRestaurantMenu(id).observe(this, new Observer<Menu>() {
                 @Override
                 public void onChanged(Menu menu) {

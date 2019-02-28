@@ -1,6 +1,5 @@
 package one.marcomass.ezeat.adapaters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,9 @@ import one.marcomass.ezeat.models.Dish;
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
 
     public List<Dish> dataSet;
-    private CartManager listener;
+    private OrderManager listener;
 
-    public MenuAdapter(List<Dish> dataSet, CartManager listener) {
+    public MenuAdapter(List<Dish> dataSet, OrderManager listener) {
         this.dataSet = dataSet;
         this.listener = listener;
     }
@@ -97,7 +96,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuHolder> {
         }
     }
 
-    public interface CartManager {
+    public interface OrderManager {
         void addDish(DishEntity dish);
         void removeDish(String dishID);
     }
