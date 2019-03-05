@@ -2,6 +2,7 @@ package one.marcomass.ezeat.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,8 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.OrderM
         recyclerCheckout = view.findViewById(R.id.recycler_checkout);
         recyclerCheckout.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerCheckout.setEmptyView(view.findViewById(R.id.empty_view_checkout));
-        checkoutAdapter = new CheckoutAdapter(null, this);
+        checkoutAdapter = new CheckoutAdapter(this);
+        recyclerCheckout.setHasFixedSize(true);
         recyclerCheckout.setAdapter(checkoutAdapter);
 
         //TODO implement
@@ -122,7 +124,7 @@ public class CheckoutFragment extends Fragment implements CheckoutAdapter.OrderM
         orderViewModel.getAllDishes().observe(this, new Observer<List<DishEntity>>() {
             @Override
             public void onChanged(List<DishEntity> dishEntities) {
-                checkoutAdapter.setDataSet(dishEntities);
+                checkoutAdapter.submitList(dishEntities);
             }
         });
 

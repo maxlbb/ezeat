@@ -2,11 +2,14 @@ package one.marcomass.ezeat;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import one.marcomass.ezeat.db.entity.DishEntity;
 
 
 public class RecyclerViewEmpty extends RecyclerView {
@@ -14,9 +17,22 @@ public class RecyclerViewEmpty extends RecyclerView {
     private View emptyView;
 
     private AdapterDataObserver adapterDataObserver = new AdapterDataObserver() {
+
         @Override
-        public void onChanged() {
-            super.onChanged();
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            super.onItemRangeInserted(positionStart, itemCount);
+            updateEmptyView();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            super.onItemRangeRemoved(positionStart, itemCount);
+            updateEmptyView();
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            super.onItemRangeMoved(fromPosition, toPosition, itemCount);
             updateEmptyView();
         }
     };
@@ -42,7 +58,6 @@ public class RecyclerViewEmpty extends RecyclerView {
             adapter.registerAdapterDataObserver(adapterDataObserver);
         }
         super.setAdapter(adapter);
-        updateEmptyView();
     }
 
     public void setEmptyView(View emptyView) {

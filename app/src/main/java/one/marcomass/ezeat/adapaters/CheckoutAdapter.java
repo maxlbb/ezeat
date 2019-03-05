@@ -1,5 +1,6 @@
 package one.marcomass.ezeat.adapaters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,23 +10,29 @@ import android.widget.TextView;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import one.marcomass.ezeat.R;
 import one.marcomass.ezeat.db.entity.DishEntity;
 
-public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHolder> {
+public class CheckoutAdapter extends ListAdapter<DishEntity, CheckoutAdapter.DishHolder> {
 
-    public List<DishEntity> dataSet;
     private OrderManager orderListener;
 
-    public CheckoutAdapter(List<DishEntity> dishes, OrderManager orderListener) {
-        this.dataSet = dishes;
-        this.orderListener = orderListener;
-    }
+    public CheckoutAdapter(OrderManager orderListener) {
+        super(new DiffUtil.ItemCallback<DishEntity>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull DishEntity oldItem, @NonNull DishEntity newItem) {
+                return oldItem.getDishID().equals(newItem.getDishID());
+            }
 
-    public void setDataSet(List<DishEntity> dataSet) {
-        this.dataSet = dataSet;
-        notifyDataSetChanged();
+            @Override
+            public boolean areContentsTheSame(@NonNull DishEntity oldItem, @NonNull DishEntity newItem) {
+                return oldItem.getQuantity() == newItem.getQuantity();
+            }
+        });
+        this.orderListener = orderListener;
     }
 
     public class DishHolder extends RecyclerView.ViewHolder {
@@ -49,21 +56,21 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
             buttonAddDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orderListener.addDish(dataSet.get(getAdapterPosition()));
+                    orderListener.addDish(getItem(getAdapterPosition()));
                 }
             });
 
             buttonRemoveDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orderListener.removeDish(dataSet.get(getAdapterPosition()).getDishID());
+                    orderListener.removeDish(getItem(getAdapterPosition()).getDishID());
                 }
             });
 
             buttonRemoveAllDish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orderListener.removeAllDish(dataSet.get(getAdapterPosition()).getDishID());
+                    orderListener.removeAllDish(getItem(getAdapterPosition()).getDishID());
                 }
             });
         }
@@ -85,12 +92,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.DishHo
 
     @Override
     public void onBindViewHolder(@NonNull DishHolder holder, int position) {
-        holder.bindData(dataSet.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return dataSet == null ? 0 : dataSet.size();
+        holder.bindData(getItem(position));
     }
 
     public interface OrderManager {
